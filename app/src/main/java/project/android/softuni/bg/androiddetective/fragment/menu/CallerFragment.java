@@ -11,17 +11,11 @@ import project.android.softuni.bg.androiddetective.R;
 /**
  * Created by Milko G on 22/09/2016.
  */
-public class FixturesFragment extends Fragment {
-
-    public FixturesFragment() {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_fixtures, container, false);
-
-        return rootView;
-    }
+public class CallerFragment extends Fragment {
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View rootView = inflater.inflate(R.layout.fragment_caller, container, false);
+    return rootView;
+  }
 
 }

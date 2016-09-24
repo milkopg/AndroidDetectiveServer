@@ -25,7 +25,7 @@
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:text="Edit fragment_table.xml to change the appearance"
-        android:id="@+id/textView2" />
+        android:id="@+id/text_view_read_sms" />
 
 
 

@@ -15,8 +15,9 @@ import android.widget.ListView;
 
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
-import project.android.softuni.bg.androiddetective.fragment.menu.ConnectFragment;
-import project.android.softuni.bg.androiddetective.fragment.menu.FixturesFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[3];
+        DataModel[] drawerItem = new DataModel[4];
 
-        drawerItem[0] = new DataModel(R.drawable.connect, "Connect");
-        drawerItem[1] = new DataModel(R.drawable.fixtures, "Fixtures");
-        drawerItem[2] = new DataModel(R.drawable.table, "Table");
+        drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings));
+        drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms));
+        drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info));
+        drawerItem[3] = new DataModel(R.drawable.table, "Table");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -73,12 +75,15 @@ public class MainActivity extends AppCompatActivity {
 
         switch (position) {
             case 0:
-                fragment = new ConnectFragment();
+                fragment = new SettingsFragment();
                 break;
             case 1:
-                fragment = new FixturesFragment();
+                fragment = new ReadSmsFragment();
                 break;
             case 2:
+                fragment = new CallerFragment();
+                break;
+            case 3:
                 fragment = new TableFragment();
                 break;
 

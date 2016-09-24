@@ -22,7 +22,6 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
     DataModel data[] = null;
 
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, DataModel[] data) {
-
         super(mContext, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.mContext = mContext;

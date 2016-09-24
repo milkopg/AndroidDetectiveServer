@@ -12,16 +12,10 @@ import project.android.softuni.bg.androiddetective.R;
  * Created by Milko G on 22/09/2016
  */
 public class TableFragment extends Fragment {
-
-    public TableFragment() {
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_table, container, false);
-
-        return rootView;
-    }
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View rootView = inflater.inflate(R.layout.fragment_table, container, false);
+    return rootView;
+  }
 
 }

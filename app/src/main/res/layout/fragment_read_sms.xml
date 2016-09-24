@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textSize="45dp"
-        android:text="Connect"
+        android:text="Read sms"
         android:textStyle="bold"/>
 
     <TextView
@@ -25,8 +25,8 @@
         android:textSize="12dp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
-        android:text="Edit fragment_connect.xml to change the appearance"
-        android:id="@+id/textView2" />
+        android:text="Edit fragment_read_sms.xml to change the appearance"
+        android:id="@+id/text_view_read_sms" />
 
 
 

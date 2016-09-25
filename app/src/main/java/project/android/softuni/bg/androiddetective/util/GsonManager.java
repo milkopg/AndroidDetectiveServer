@@ -8,6 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 
 /**
@@ -27,20 +28,20 @@ public class GsonManager {
     return gson.toJson(objectBaseMap);
   }
 
-  public static ResponseBase convertGsonStringToObject(String json) {
+  public static ResponseObject convertGsonStringToObject(String json) {
     Gson gson = new Gson();
-    ResponseBase data = null;
+    ResponseObject data = null;
     try {
-      data = gson.fromJson(json, ResponseBase.class);
+      data = gson.fromJson(json, ResponseObject.class);
     } catch (JsonSyntaxException e) {
       Log.e(TAG, "convertGsonStringToObject: " + e.getLocalizedMessage());
     }
      return data;
   }
 
-  public static ConcurrentHashMap<String, ResponseBase> convertGsonStringToObjectMap(String json) {
+  public static ConcurrentHashMap<String, ResponseObject> convertGsonStringToObjectMap(String json) {
     Gson gson = new Gson();
-    ConcurrentHashMap<String, ResponseBase>  objectMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<String, ResponseObject>  objectMap = new ConcurrentHashMap<>();
     try {
       objectMap = gson.fromJson(json, objectMap.getClass());
     } catch (JsonSyntaxException e) {

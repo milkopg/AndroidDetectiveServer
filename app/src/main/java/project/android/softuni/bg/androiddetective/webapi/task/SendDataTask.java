@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import project.android.softuni.bg.androiddetectiveclient.util.Constants;
-import project.android.softuni.bg.androiddetectiveclient.webapi.model.ObjectBase;
-import project.android.softuni.bg.androiddetectiveclient.webapi.model.Response;
+import project.android.softuni.bg.androiddetective.util.Constants;
+import project.android.softuni.bg.androiddetective.webapi.model.Response;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko on 22.9.2016 г..
@@ -30,7 +30,7 @@ import project.android.softuni.bg.androiddetectiveclient.webapi.model.Response;
 
 public class SendDataTask extends AsyncTask <URL, String, String>{
    private String data;
-   private ConcurrentHashMap<String, ObjectBase> dataMap;
+   private ConcurrentHashMap<String, ResponseObject> dataMap;
    private HttpURLConnection conn;
    private String requestId;
    private StringBuffer response;
@@ -39,7 +39,7 @@ public class SendDataTask extends AsyncTask <URL, String, String>{
     this.data = data;
   }
 
-  public SendDataTask(ConcurrentHashMap<String, ObjectBase> dataMap) {
+  public SendDataTask(ConcurrentHashMap<String, ResponseObject> dataMap) {
     this.dataMap = dataMap;
   }
 

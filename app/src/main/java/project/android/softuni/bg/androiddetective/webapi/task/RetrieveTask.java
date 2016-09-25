@@ -18,9 +18,12 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 
 public class RetrieveTask extends AsyncTask <Void, Void, String>{
   private static final String API_URL = Constants.WEB_API_URL;
-  private static final String API_KEY = "27a4af35bdff5736";
-  private static final String API_EMAIL = "bart@fullcontact.com";
+  private String blobId;
   private Exception exception;
+
+  public RetrieveTask(String blobId) {
+    this.blobId = blobId;
+  }
 
   protected void onPreExecute() {
 //    progressBar.setVisibility(View.VISIBLE);
@@ -29,7 +32,7 @@ public class RetrieveTask extends AsyncTask <Void, Void, String>{
 
   protected String doInBackground(Void... urls) {
     // Do some validation here
-    String blobId = "";
+    String blobId = "57e7827ae4b0dc55a4f8ef4a";
 
     try {
       URL url = new URL(API_URL + "/" + blobId);
@@ -60,7 +63,7 @@ public class RetrieveTask extends AsyncTask <Void, Void, String>{
     }
     //progressBar.setVisibility(View.GONE);
     Log.i("INFO", response);
-    ResponseBase.getDataMap().putAll(GsonManager.convertGsonStringToObjectMap(response));
+    ResponseBase.getDataMap().put(GsonManager.convertGsonStringToObject(response).id, GsonManager.convertGsonStringToObject(response));
     //responseView.setText(response);
     // TODO: check this.exception
     // TODO: do something with the feed

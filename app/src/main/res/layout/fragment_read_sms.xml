@@ -22,7 +22,7 @@
         android:layout_centerInParent="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="12dp"
+        android:textSize="15sp"
         android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:text="Edit fragment_read_sms.xml to change the appearance"

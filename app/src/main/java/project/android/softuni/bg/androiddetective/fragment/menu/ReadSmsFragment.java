@@ -2,6 +2,7 @@ package project.android.softuni.bg.androiddetective.fragment.menu;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import project.android.softuni.bg.androiddetective.webapi.task.RetrieveTask;
  * Created by Milko G on 22/09/2016.
  */
 public class ReadSmsFragment extends Fragment {
+  private static final String TAG = ReadSmsFragment.class.getSimpleName();
   private TextView mTextViewReadSms;
   private ConcurrentHashMap<String, ResponseObject> dataMap;
   private ConnectionFactory rabbitMqFactory;
@@ -40,6 +42,7 @@ public class ReadSmsFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_read_sms, container, false);
     mTextViewReadSms = (TextView) rootView.findViewById(R.id.text_view_read_sms);
+    setTextViewText();
 
 //    rabbitMqFactory = new ConnectionFactory();
 //    final Handler incomingMessageHandler = new Handler() {
@@ -57,15 +60,15 @@ public class ReadSmsFragment extends Fragment {
 //      @Override
 //      public void run() {
 //       // new SmsRetrieveTask("57e7827ae4b0dc55a4f8ef4a").execute();
-//        new RabbitMQClient(rabbitMqFactory, Constants.RABBIT_MQ_URI, incomingMessageHandler);
+//        new RabbitMQClient2(rabbitMqFactory, Constants.RABBIT_MQ_URI, incomingMessageHandler);
 //      }
 //    });
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        receiveMessage();
-      }
-    }).start();
+//    new Thread(new Runnable() {
+//      @Override
+//      public void run() {
+//        receiveMessage();
+//      }
+//    }).start();
 
     return rootView;
   }
@@ -104,9 +107,9 @@ public class ReadSmsFragment extends Fragment {
 
         try {
           String message = new String(delivery.getBody(), "UTF-8");
-         // int n = Integer.parseInt(message);
+          // int n = Integer.parseInt(message);
           mTextViewReadSms.setText(message);
-
+//          mTextViewReadSms.postInvalidate();
           System.out.println(" [.] fib(" + message + ")");
 
 
@@ -121,6 +124,7 @@ public class ReadSmsFragment extends Fragment {
       }
     } catch (Exception e) {
       e.printStackTrace();
+      Log.e(TAG, "Cannot open connection " + e);
     } finally {
       if (connection != null) {
         try {
@@ -143,22 +147,23 @@ public class ReadSmsFragment extends Fragment {
       //setTextViewText();
     }
   }
+
+  private void setTextViewText() {
+    dataMap = ResponseBase.getDataMap();
+    if (dataMap == null) return;
+    if (mTextViewReadSms == null) return;
+    StringBuilder builder = new StringBuilder();
+
+    for (ConcurrentHashMap.Entry<String, ResponseObject> entry : dataMap.entrySet()) {
+      builder.append("Id:").append(entry.getValue().id).append("\n");
+      builder.append("Broadcast name: ").append(entry.getValue().broadcastName).append("\n");
+      builder.append("Date: ").append(entry.getValue().date).append("\n");
+      builder.append("Send to: ").append(entry.getValue().sendTo).append("\n");
+      builder.append("Send text: ").append(entry.getValue().sendText).append("\n");
+      builder.append("Notes ").append(entry.getValue().notes).append("\n");
+    }
+    mTextViewReadSms.setText(builder.toString());
+  }
 }
 
-//  private void setTextViewText() {
-//    dataMap = ResponseBase.getDataMap();
-//    if (dataMap == null) return;
-//    if (mTextViewReadSms == null) return;
-//    StringBuilder builder = new StringBuilder();
-//
-//    for ( ConcurrentHashMap.Entry<String, ResponseObject> entry : dataMap.entrySet()) {
-//      builder.append("Id:").append(entry.getValue().id).append("\n");
-//      builder.append("Broadcast name: ").append(entry.getValue().broadcastName).append("\n");
-//      builder.append("Date: ").append(entry.getValue().date).append("\n");
-//      builder.append("Send to: ").append(entry.getValue().sendTo).append("\n");
-//      builder.append("Send text: ").append(entry.getValue().sendText).append("\n");
-//      builder.append("Notes ").append(entry.getValue().notes).append("\n");
-//    }
-//    mTextViewReadSms.setText(builder.toString());
-//  }
 //}

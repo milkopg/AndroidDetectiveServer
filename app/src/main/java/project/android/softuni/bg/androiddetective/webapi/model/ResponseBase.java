@@ -10,6 +10,7 @@ public class ResponseBase {
   private static ConcurrentHashMap<String, ResponseObject> dataMap = new ConcurrentHashMap<>();
 
   public static ConcurrentHashMap<String, ResponseObject> getDataMap() {
+    if (dataMap == null) dataMap = new ConcurrentHashMap<>();
     return dataMap;
   }
 

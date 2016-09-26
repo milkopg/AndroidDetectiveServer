@@ -23,7 +23,7 @@ import java.util.concurrent.LinkedBlockingDeque;
  * Created by Milko on 25.9.2016 г..
  */
 
-public class RabbitMQClient {
+public class RabbitMQClient2 {
   private ConnectionFactory factory;
   private Thread publishThread;
   private Thread subscribeThread;
@@ -32,7 +32,7 @@ public class RabbitMQClient {
   private String uri;
   private List<String> messageList = new ArrayList<>();
 
-  public RabbitMQClient(ConnectionFactory factory, String uri, Handler handler) {
+  public RabbitMQClient2(ConnectionFactory factory, String uri, Handler handler) {
     this.factory = factory;
     this.uri = uri;
     this.handler = handler;

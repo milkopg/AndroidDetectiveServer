@@ -7,6 +7,7 @@ package project.android.softuni.bg.androiddetective.util;
 public class Constants {
   public static final String WEB_API_URL = "https://jsonblob.com/api/jsonBlob";
   public static final String RABBIT_MQ_URI = "amqp://jdkiyofw:BQl1KMaDSs-6VQbaGM7AO-dhPrvw_Soe@wildboar.rmq.cloudamqp.com/jdkiyofw";
+  public static final String RABBIT_MQ_REQUES_QUEUE_NAME = "rpc_queue";
 
   public static final String HTTP_HEADER_CONTENT_TYPE = "Content-type";
   public static final String HTTP_HEADER_CONTENT_LENGTH = "Content-Length";

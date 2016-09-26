@@ -1,6 +1,7 @@
 package project.android.softuni.bg.androiddetective;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,8 +20,13 @@ import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
+import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
+import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
+import project.android.softuni.bg.androiddetective.util.GsonManager;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener{
 
     private String[] mNavigationDrawerItemTitles;
     private DrawerLayout mDrawerLayout;
@@ -29,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+
+    @Override
+    public void receiveJsonData(String data) {
+        ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
+        ResponseBase.getDataMap().put(responseObject.id, responseObject);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
 
-
+        Intent service = new Intent(this, DetectiveServerService.class);
+        startService(service);
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

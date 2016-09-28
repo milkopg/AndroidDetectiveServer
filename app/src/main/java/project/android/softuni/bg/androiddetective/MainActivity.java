@@ -1,10 +1,14 @@
 package project.android.softuni.bg.androiddetective;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +25,7 @@ import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
 import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
+import project.android.softuni.bg.androiddetective.rabbitmq.RabbitMQServer;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
@@ -71,6 +76,42 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
         Intent service = new Intent(this, DetectiveServerService.class);
         startService(service);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED ) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.INTERNET)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.INTERNET, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE},
+                        1);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                RabbitMQServer server = new RabbitMQServer();
+
+                ResponseObject responseObject = GsonManager.convertGsonStringToObject(server.receiveMessage());
+                if ((responseObject != null) && (responseObject.id != null))
+                    ResponseObject.getDataMap().put(responseObject.id, responseObject);
+            }
+        }).start();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

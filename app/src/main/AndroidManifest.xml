@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="project.android.softuni.bg.androiddetective"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
-
-    <uses-sdk
-        android:minSdkVersion="15"
-        android:targetSdkVersion="24"
-        tools:overrideLibrary="android.support.v7.appcompat,android.support.v4"/>
+          xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>

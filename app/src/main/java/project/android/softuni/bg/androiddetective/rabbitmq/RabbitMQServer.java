@@ -1,13 +1,12 @@
 package project.android.softuni.bg.androiddetective.rabbitmq;
 
-import android.provider.SyncStateContract;
 import android.util.Log;
 
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.QueueingConsumer;
 import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.QueueingConsumer;
 
 import project.android.softuni.bg.androiddetective.util.Constants;
 
@@ -19,24 +18,46 @@ public class RabbitMQServer {
   private static final String RPC_QUEUE_NAME = Constants.RABBIT_MQ_REQUES_QUEUE_NAME;
   private static final String TAG = RabbitMQServer.class.getSimpleName();
   private static RabbitMQServer instance;
+  Connection connection = null;
+  Channel channel = null;
+  String message = null;
 
-  private RabbitMQServer() {}
+  public RabbitMQServer() {
+    ConnectionFactory factory = new ConnectionFactory();
 
-  public String receiveMessage() {
-    Connection connection = null;
-    Channel channel = null;
-    String message = null;
     try {
-      ConnectionFactory factory = new ConnectionFactory();
       factory.setAutomaticRecoveryEnabled(true);
       factory.setHost(Constants.RABBIT_MQ_URI);
-
+//      factory.setUsername("jdkiyofw");
+//      factory.setPassword("BQl1KMaDSs-6VQbaGM7AO-dhPrvw_Soe");
+//      factory.setHost("wildboar.rmq.cloudamqp.com");
       connection = factory.newConnection();
       channel = connection.createChannel();
 
       channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
 
       channel.basicQos(1);
+
+    }catch (Exception e) {
+      Log.e(TAG, "Cannot open RabbitMQ Connection: " + e);
+    }
+  }
+
+  public String receiveMessage() {
+//    Connection connection = null;
+//    Channel channel = null;
+    String message = null;
+    ConnectionFactory factory = new ConnectionFactory();
+    try {
+//      factory.setAutomaticRecoveryEnabled(true);
+//      factory.setHost(Constants.RABBIT_MQ_URI);
+//
+//      connection = factory.newConnection();
+//      channel = connection.createChannel();
+//
+//      channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
+//
+//      channel.basicQos(1);
 
       QueueingConsumer consumer = new QueueingConsumer(channel);
       channel.basicConsume(RPC_QUEUE_NAME, false, consumer);

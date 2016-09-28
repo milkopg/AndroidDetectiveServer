@@ -5,8 +5,8 @@ android {
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "project.android.softuni.bg.androiddetective"
-        /*minSdkVersion 15
-        targetSdkVersion 24*/
+        minSdkVersion 15
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,4 +29,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile group: 'com.google.code.gson', name: 'gson', version: '1.7.2'
     compile group: 'com.rabbitmq', name: 'amqp-client', version: '3.6.5'
+
+
 }

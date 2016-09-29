@@ -9,6 +9,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
 import project.android.softuni.bg.androiddetective.util.Constants;
+import project.android.softuni.bg.androiddetective.util.GsonManager;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko on 26.9.2016 г..
@@ -17,6 +20,7 @@ import project.android.softuni.bg.androiddetective.util.Constants;
 public class RabbitMQServer {
   private static final String RPC_QUEUE_NAME = Constants.RABBIT_MQ_REQUES_QUEUE_NAME;
   private static final String TAG = RabbitMQServer.class.getSimpleName();
+  private static final String RABBIT_MQ_URI = Constants.RABBIT_MQ_URI;
   private static RabbitMQServer instance;
   Connection connection = null;
   Channel channel = null;
@@ -27,7 +31,7 @@ public class RabbitMQServer {
 
     try {
       factory.setAutomaticRecoveryEnabled(true);
-      factory.setHost(Constants.RABBIT_MQ_URI);
+      factory.setUri(RABBIT_MQ_URI);
 //      factory.setUsername("jdkiyofw");
 //      factory.setPassword("BQl1KMaDSs-6VQbaGM7AO-dhPrvw_Soe");
 //      factory.setHost("wildboar.rmq.cloudamqp.com");
@@ -80,6 +84,8 @@ public class RabbitMQServer {
           message = new String(delivery.getBody(), "UTF-8");
 
           response = message;
+          ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
+          ResponseBase.getDataMap().put(responseObject.id, responseObject);
         } catch (Exception e) {
           System.out.println(" [.] " + e.toString());
           response = "";

@@ -17,5 +17,4 @@ public class CallerFragment extends Fragment {
     View rootView = inflater.inflate(R.layout.fragment_caller, container, false);
     return rootView;
   }
-
 }

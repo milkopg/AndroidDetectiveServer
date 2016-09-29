@@ -2,7 +2,9 @@ package project.android.softuni.bg.androiddetective;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -28,6 +30,7 @@ import project.android.softuni.bg.androiddetective.listener.IServiceCommunicatio
 import project.android.softuni.bg.androiddetective.rabbitmq.RabbitMQServer;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
+import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -74,8 +77,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         setupDrawerToggle();
 
-        Intent service = new Intent(this, DetectiveServerService.class);
-        startService(service);
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED ) {
@@ -102,16 +104,21 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
             }
         }
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RabbitMQServer server = new RabbitMQServer();
+        Intent service = new Intent(this, DetectiveServerService.class);
+        ServiceConnection connection = ServiceConnectionManager.getInstance(MainActivity.this);
+        bindService(service, connection, Context.BIND_AUTO_CREATE);
+        startService(service);
 
-                ResponseObject responseObject = GsonManager.convertGsonStringToObject(server.receiveMessage());
-                if ((responseObject != null) && (responseObject.id != null))
-                    ResponseObject.getDataMap().put(responseObject.id, responseObject);
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                RabbitMQServer server = RabbitMQServer.getInstance();
+//                String responseJson = server.receiveMessage();
+//                ResponseObject responseObject = GsonManager.convertGsonStringToObject(responseJson);
+//                if ((responseObject != null) && (responseObject.id != null))
+//                    ResponseObject.getDataMap().put(responseObject.id, responseObject);
+//            }
+//        }).start();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {

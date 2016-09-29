@@ -22,46 +22,43 @@ public class RabbitMQServer {
   private static final String TAG = RabbitMQServer.class.getSimpleName();
   private static final String RABBIT_MQ_URI = Constants.RABBIT_MQ_URI;
   private static RabbitMQServer instance;
-  Connection connection = null;
-  Channel channel = null;
+
   String message = null;
 
   public RabbitMQServer() {
-    ConnectionFactory factory = new ConnectionFactory();
-
-    try {
-      factory.setAutomaticRecoveryEnabled(true);
-      factory.setUri(RABBIT_MQ_URI);
-//      factory.setUsername("jdkiyofw");
-//      factory.setPassword("BQl1KMaDSs-6VQbaGM7AO-dhPrvw_Soe");
-//      factory.setHost("wildboar.rmq.cloudamqp.com");
-      connection = factory.newConnection();
-      channel = connection.createChannel();
-
-      channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
-
-      channel.basicQos(1);
-
-    }catch (Exception e) {
-      Log.e(TAG, "Cannot open RabbitMQ Connection: " + e);
-    }
-  }
-
-  public String receiveMessage() {
-//    Connection connection = null;
-//    Channel channel = null;
-    String message = null;
-    ConnectionFactory factory = new ConnectionFactory();
-    try {
-//      factory.setAutomaticRecoveryEnabled(true);
-//      factory.setHost(Constants.RABBIT_MQ_URI);
+//    ConnectionFactory factory = new ConnectionFactory();
 //
+//
+//    try {
+//      factory.setAutomaticRecoveryEnabled(true);
+//      factory.setUri(RABBIT_MQ_URI);
 //      connection = factory.newConnection();
 //      channel = connection.createChannel();
 //
 //      channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
 //
 //      channel.basicQos(1);
+//
+//    }catch (Exception e) {
+//      Log.e(TAG, "Cannot open RabbitMQ Connection: " + e);
+//    }
+  }
+
+  public String receiveMessage() {
+    String message = null;
+    Channel channel = null;
+    Connection connection = null;
+    ConnectionFactory factory = new ConnectionFactory();
+    try {
+      factory.setAutomaticRecoveryEnabled(true);
+      factory.setUri(Constants.RABBIT_MQ_URI);
+
+      connection = factory.newConnection();
+      channel = connection.createChannel();
+
+      channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
+
+      channel.basicQos(1);
 
       QueueingConsumer consumer = new QueueingConsumer(channel);
       channel.basicConsume(RPC_QUEUE_NAME, false, consumer);
@@ -108,11 +105,11 @@ public class RabbitMQServer {
     return message;
   }
 
-  public static RabbitMQServer getInstance() {
-    if (instance == null)
-      instance = new RabbitMQServer();
-    return instance;
-  }
+//  public static RabbitMQServer getInstance() {
+//    if (instance == null)
+//      instance = new RabbitMQServer();
+//    return instance;
+//  }
 
   @Override
   protected Object clone() throws CloneNotSupportedException {

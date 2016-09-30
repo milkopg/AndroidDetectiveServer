@@ -17,9 +17,9 @@ import project.android.softuni.bg.androiddetective.data.DataModel;
  */
 public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
 
-    Context mContext;
-    int layoutResourceId;
-    DataModel data[] = null;
+    private Context mContext;
+    private int layoutResourceId;
+    private DataModel data[] = null;
 
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, DataModel[] data) {
         super(mContext, layoutResourceId, data);

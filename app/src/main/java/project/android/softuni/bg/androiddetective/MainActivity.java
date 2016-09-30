@@ -27,7 +27,6 @@ import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
 import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
-import project.android.softuni.bg.androiddetective.rabbitmq.RabbitMQServer;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_item_row, drawerItem);
+        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_menu_item, drawerItem);
         mDrawerList.setAdapter(adapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -3,8 +3,11 @@ package project.android.softuni.bg.androiddetective.util;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
@@ -29,12 +32,12 @@ public class GsonManager {
   }
 
   public static ResponseObject convertGsonStringToObject(String json) {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder().create();
     ResponseObject data = null;
     try {
       data = gson.fromJson(json, ResponseObject.class);
     } catch (JsonSyntaxException e) {
-      Log.e(TAG, "convertGsonStringToObject: " + e.getLocalizedMessage());
+      Log.e(TAG, "convertGsonStringToObject: " + e);
     }
      return data;
   }
@@ -45,7 +48,7 @@ public class GsonManager {
     try {
       objectMap = gson.fromJson(json, objectMap.getClass());
     } catch (JsonSyntaxException e) {
-      Log.e(TAG, "convertGsonStringToObjectMap: " + e.getLocalizedMessage());
+      Log.e(TAG, "convertGsonStringToObjectMap: " + e);
     }
     return objectMap;
   }

@@ -78,16 +78,6 @@ public class SendDataTask extends AsyncTask <URL, String, String>{
       conn.getResponseCode();
       requestId =  (map.containsKey(Constants.HTTP_HEADER_LOCATION)) ? map.get(Constants.HTTP_HEADER_LOCATION).get(0) : "";
 
-
-//
-//
-//      Toast.makeText(this, response.query, Toast.LENGTH_SHORT).show();
-//
-//      List<Result> results = response.results;
-//
-//      for (Result result : results) {
-//        Toast.makeText(this, result.fromUser, Toast.LENGTH_SHORT).show();
-//      }
       Log.d(this.getClass().getSimpleName(), "Location: " + map.get("Location"));
       BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
       String inputLine;
@@ -128,8 +118,6 @@ public class SendDataTask extends AsyncTask <URL, String, String>{
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
-    //progressBar.setVisibility(View.GONE);
-
   }
 
   @Override

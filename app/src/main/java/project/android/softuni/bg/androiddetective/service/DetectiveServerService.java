@@ -41,20 +41,13 @@ public class DetectiveServerService extends Service {
     new Thread(new Runnable() {
       @Override
       public void run() {
-
-        ResponseObject responseObject = GsonManager.convertGsonStringToObject(server.receiveMessage());
+        String response = server.receiveMessage();
+        ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
         if ((responseObject != null) && (responseObject.id != null))
           ResponseObject.getDataMap().put(responseObject.id, responseObject);
       }
     }).start();
-
-//    RabbitMQServer server = RabbitMQServer.getInstance();
-//    String responseJson = server.receiveMessage();
-//    ResponseObject responseObject = GsonManager.convertGsonStringToObject(responseJson);
-//    if ((responseObject != null) && (responseObject.id != null))
-//      ResponseObject.getDataMap().put(responseObject.id, responseObject);
-
-    return super.onStartCommand(intent, flags, startId);
+   return super.onStartCommand(intent, flags, startId);
   }
 
 }

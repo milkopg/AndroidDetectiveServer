@@ -2,32 +2,16 @@ package project.android.softuni.bg.androiddetective.fragment.menu;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.QueueingConsumer;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeoutException;
 
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
-import project.android.softuni.bg.androiddetective.webapi.task.RetrieveTask;
 
 /**
  * Created by Milko G on 22/09/2016.

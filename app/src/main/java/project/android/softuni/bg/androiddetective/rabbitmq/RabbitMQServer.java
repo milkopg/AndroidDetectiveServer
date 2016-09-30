@@ -82,7 +82,8 @@ public class RabbitMQServer {
 
           response = message;
           ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
-          ResponseBase.getDataMap().put(responseObject.id, responseObject);
+          if (responseObject != null)
+            ResponseBase.getDataMap().put(responseObject.id, responseObject);
         } catch (Exception e) {
           System.out.println(" [.] " + e.toString());
           response = "";

@@ -19,7 +19,7 @@ public class ResponseObject extends ResponseBase implements Parcelable {
   public String broadcastName;
 
   @SerializedName("date")
-  public Date date;
+  public String date;
 
   @SerializedName("send_to")
   public String sendTo;
@@ -30,7 +30,7 @@ public class ResponseObject extends ResponseBase implements Parcelable {
   @SerializedName("notes")
   public String notes;
 
-  public ResponseObject(String id, String broadcastName, Date date, String sendTo, String sendText, String notes) {
+  public ResponseObject(String id, String broadcastName, String date, String sendTo, String sendText, String notes) {
     this.id = id;
     this.broadcastName = broadcastName;
     this.date = date;
@@ -39,13 +39,10 @@ public class ResponseObject extends ResponseBase implements Parcelable {
     this.notes = notes;
   }
 
-
-
   protected ResponseObject(Parcel in) {
     id = in.readString();
     broadcastName = in.readString();
-    long tmpDate = in.readLong();
-    date = tmpDate != -1 ? new Date(tmpDate) : null;
+    date = in.readString();
     sendTo = in.readString();
     sendText = in.readString();
     notes = in.readString();
@@ -60,14 +57,14 @@ public class ResponseObject extends ResponseBase implements Parcelable {
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(id);
     dest.writeString(broadcastName);
-    dest.writeLong(date != null ? date.getTime() : -1L);
+    dest.writeString(date);
     dest.writeString(sendTo);
     dest.writeString(sendText);
     dest.writeString(notes);
   }
 
   @SuppressWarnings("unused")
-  public static final Creator<ResponseObject> CREATOR = new Creator<ResponseObject>() {
+  public static final Parcelable.Creator<ResponseObject> CREATOR = new Parcelable.Creator<ResponseObject>() {
     @Override
     public ResponseObject createFromParcel(Parcel in) {
       return new ResponseObject(in);

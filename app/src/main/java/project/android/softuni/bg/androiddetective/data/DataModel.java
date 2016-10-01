@@ -5,13 +5,39 @@ package project.android.softuni.bg.androiddetective.data;
  */
 public class DataModel {
 
-    public int icon;
-    public String name;
+    private int icon;
+    private String name;
+    private String receiverName;
 
     // Constructor.
-    public DataModel(int icon, String name) {
+    public DataModel(int icon, String name, String receiverName) {
 
         this.icon = icon;
         this.name = name;
+        this.receiverName = receiverName;
+    }
+
+    public int getIcon() {
+        return icon;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getReceiverName() {
+        return receiverName;
+    }
+
+    public void setReceiverName(String receiverName) {
+        this.receiverName = receiverName;
     }
 }

@@ -36,7 +36,8 @@ public class DetectiveServerService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    server = new  RabbitMQServer();
+    server = RabbitMQServer.getInstance(getBaseContext());
+    //server = new RabbitMQServer();
 
     new Thread(new Runnable() {
       @Override
@@ -49,5 +50,4 @@ public class DetectiveServerService extends Service {
     }).start();
    return super.onStartCommand(intent, flags, startId);
   }
-
 }

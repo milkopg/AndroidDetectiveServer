@@ -1,5 +1,6 @@
 package project.android.softuni.bg.androiddetective.rabbitmq;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -8,8 +9,11 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
+import java.io.IOException;
+
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
+import project.android.softuni.bg.androiddetective.util.NotificationManagerLocal;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -22,31 +26,15 @@ public class RabbitMQServer {
   private static final String TAG = RabbitMQServer.class.getSimpleName();
   private static final String RABBIT_MQ_URI = Constants.RABBIT_MQ_URI;
   private static RabbitMQServer instance;
+  private static Context mContext;
 
-  String message = null;
-
-  public RabbitMQServer() {
-//    ConnectionFactory factory = new ConnectionFactory();
-//
-//
-//    try {
-//      factory.setAutomaticRecoveryEnabled(true);
-//      factory.setUri(RABBIT_MQ_URI);
-//      connection = factory.newConnection();
-//      channel = connection.createChannel();
-//
-//      channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
-//
-//      channel.basicQos(1);
-//
-//    }catch (Exception e) {
-//      Log.e(TAG, "Cannot open RabbitMQ Connection: " + e);
-//    }
+  public RabbitMQServer(Context context) {
+    this.mContext = context;
   }
 
   public String receiveMessage() {
     String message = null;
-    Channel channel = null;
+    Channel channel;
     Connection connection = null;
     ConnectionFactory factory = new ConnectionFactory();
     try {
@@ -79,17 +67,24 @@ public class RabbitMQServer {
 
         try {
           message = new String(delivery.getBody(), "UTF-8");
-
+          Log.d(TAG, "Received message: " + message);
           response = message;
           ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
-          if (responseObject != null)
+          if (responseObject != null) {
             ResponseBase.getDataMap().put(responseObject.id, responseObject);
+            NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
+          }
         } catch (Exception e) {
           System.out.println(" [.] " + e.toString());
           response = "";
         } finally {
-          channel.basicPublish("", props.getReplyTo(), replyProps, response.getBytes("UTF-8"));
-          channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+          try {
+            channel.basicPublish("", props.getReplyTo(), replyProps, response.getBytes("UTF-8"));
+            channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+          } catch (IOException e) {
+            Log.e(TAG, "receiveMessage: cannot basic publish or basicAck - " + e);
+          }
+
         }
       }
     } catch (Exception e) {
@@ -106,11 +101,12 @@ public class RabbitMQServer {
     return message;
   }
 
-//  public static RabbitMQServer getInstance() {
-//    if (instance == null)
-//      instance = new RabbitMQServer();
-//    return instance;
-//  }
+  public static RabbitMQServer getInstance(Context context) {
+    mContext = context;
+    if (instance == null)
+      instance = new RabbitMQServer(context);
+    return instance;
+  }
 
   @Override
   protected Object clone() throws CloneNotSupportedException {

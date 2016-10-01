@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -20,76 +21,70 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.List;
+
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
-import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
 import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
+import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener{
+public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener {
 
-    private String[] mNavigationDrawerItemTitles;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
-    Toolbar toolbar;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
-    android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+  private String[] mNavigationDrawerItemTitles;
+  private DrawerLayout mDrawerLayout;
+  private ListView mDrawerList;
+  Toolbar toolbar;
+  private CharSequence mDrawerTitle;
+  private CharSequence mTitle;
+  private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
+  private ServiceConnection mConnection;
 
-    @Override
-    public void receiveJsonData(String data) {
-        ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
-        ResponseBase.getDataMap().put(responseObject.id, responseObject);
-    }
+  @Override
+  public void receiveJsonData(String data) {
+    ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
+    ResponseBase.getDataMap().put(responseObject.id, responseObject);
+  }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mTitle = mDrawerTitle = getTitle();
-        mNavigationDrawerItemTitles= getResources().getStringArray(R.array.navigation_drawer_items_array);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    mTitle = mDrawerTitle = getTitle();
+    mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
+    mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    mDrawerList = (ListView) findViewById(R.id.left_drawer);
+    DataModel[] mDrawerItem = setupDrawerItems();
 
-        setupToolbar();
+    setupToolbar();
 
-        DataModel[] drawerItem = new DataModel[4];
+    setupDrawerItems();
 
-        drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings));
-        drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms));
-        drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info));
-        drawerItem[3] = new DataModel(R.drawable.table, "Table");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(true);
+    setupDrawerAdapter(mDrawerList, mDrawerLayout, mDrawerItem);
 
-        DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_menu_item, drawerItem);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        setupDrawerToggle();
+    setupDrawerToggle();
 
 
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED ) {
+      // Should we show an explanation?
+      if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+              Manifest.permission.INTERNET)) {
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.INTERNET)) {
+        // Show an expanation to the user *asynchronously* -- don't block
+        // this thread waiting for the user's response! After the user
+        // sees the explanation, try again to request the permission.
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
+      }/* else {
 
                 // No explanation needed, we can request the permission.
 
@@ -100,103 +95,152 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
                 // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
-            }
-        }
-
-        Intent service = new Intent(this, DetectiveServerService.class);
-        ServiceConnection connection = ServiceConnectionManager.getInstance(MainActivity.this);
-        bindService(service, connection, Context.BIND_AUTO_CREATE);
-        startService(service);
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                RabbitMQServer server = RabbitMQServer.getInstance();
-//                String responseJson = server.receiveMessage();
-//                ResponseObject responseObject = GsonManager.convertGsonStringToObject(responseJson);
-//                if ((responseObject != null) && (responseObject.id != null))
-//                    ResponseObject.getDataMap().put(responseObject.id, responseObject);
-//            }
-//        }).start();
+            }*/
     }
 
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+    setupService();
 
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
+    checkNotificationIntent(mDrawerItem);
+  }
 
+  private void checkNotificationIntent(DataModel[] mDrawerItem) {
+    String receiverName;
+    if (getIntent().hasExtra(Constants.BROADCAST_NAME)) {
+      receiverName = getIntent().getStringExtra(Constants.BROADCAST_NAME);
+      int position = getFragmentPositionByReceiverName(receiverName, mDrawerItem);
+      Fragment fragment = getFragmentByPosition(position);
+      replaceFragment(fragment, R.id.content_frame, position);
     }
+  }
 
-    private void selectItem(int position) {
-
-        Fragment fragment = null;
-
-        switch (position) {
-            case 0:
-                fragment = new SettingsFragment();
-                break;
-            case 1:
-                fragment = new ReadSmsFragment();
-                break;
-            case 2:
-                fragment = new CallerFragment();
-                break;
-            case 3:
-                fragment = new TableFragment();
-                break;
-
-            default:
-                break;
-        }
-
-        if (fragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-
-            mDrawerList.setItemChecked(position, true);
-            mDrawerList.setSelection(position);
-            setTitle(mNavigationDrawerItemTitles[position]);
-            mDrawerLayout.closeDrawer(mDrawerList);
-
-        } else {
-            Log.e("MainActivity", "Error in creating fragment");
-        }
-    }
+  private class DrawerItemClickListener implements ListView.OnItemClickListener {
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+      selectItem(position);
     }
 
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
-    }
+  }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
+  private void selectItem(int position) {
+    Fragment fragment = getFragmentByPosition(position);
 
-    void setupToolbar(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
+    replaceFragment(fragment, R.id.content_frame, position);
+  }
 
-    void setupDrawerToggle(){
-        mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(this,mDrawerLayout,toolbar,R.string.app_name, R.string.app_name);
-        //This is necessary to change the icon of the Drawer Toggle upon state change.
-        mDrawerToggle.syncState();
-    }
+  private Fragment getFragmentByPosition(int position) {
+    Fragment fragment = null;
 
+    switch (position) {
+      case 0:
+        fragment = new SettingsFragment();
+        break;
+      case 1:
+        fragment = new ReadSmsFragment();
+        break;
+      case 2:
+        fragment = new CallerFragment();
+        break;
+      case 3:
+        fragment = new TableFragment();
+        break;
+
+      default:
+        break;
+    }
+    return fragment;
+  }
+
+  private  int getFragmentPositionByReceiverName(String name, DataModel[] drawerItem) {
+    if ((drawerItem == null) || (name == null)) return 0;
+    for (int i=0; i < drawerItem.length; i++) {
+      if (name.equals(drawerItem[i].getReceiverName())) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (mDrawerToggle.onOptionsItemSelected(item)) {
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
+
+  @Override
+  public void setTitle(CharSequence title) {
+    mTitle = title;
+    getSupportActionBar().setTitle(mTitle);
+  }
+
+  @Override
+  protected void onPostCreate(Bundle savedInstanceState) {
+    super.onPostCreate(savedInstanceState);
+    mDrawerToggle.syncState();
+  }
+
+  void setupToolbar() {
+    toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    getSupportActionBar().setDisplayShowHomeEnabled(true);
+  }
+
+  void setupDrawerToggle() {
+    mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
+    //This is necessary to change the icon of the Drawer Toggle upon state change.
+    mDrawerToggle.syncState();
+  }
+
+  private DataModel[] setupDrawerItems() {
+    DataModel[] drawerItem = new DataModel[4];
+
+    drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings), null);
+    drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms), Constants.RECEIVER_SMS_RECEIVED);
+    drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info), Constants.RECEIVER_CALL);
+    drawerItem[3] = new DataModel(R.drawable.table, "Table", null);
+    return drawerItem;
+  }
+
+  private void setupService() {
+    Intent service = new Intent(this, DetectiveServerService.class);
+    mConnection = ServiceConnectionManager.getInstance(MainActivity.this);
+    bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+    startService(service);
+  }
+
+  private void setupDrawerAdapter(ListView mDrawerList, DrawerLayout mDrawerLayout, DataModel[] drawerItem) {
+    DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_menu_item, drawerItem);
+    mDrawerList.setAdapter(adapter);
+    mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+    mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    mDrawerLayout.addDrawerListener(mDrawerToggle);
+  }
+
+  private void replaceFragment(Fragment fragment, int layoutId, int drawerPosition) {
+    if (fragment != null) {
+      FragmentManager fragmentManager = getSupportFragmentManager();
+      FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+      //fragmentTransaction.addToBackStack(null);
+      fragmentTransaction.replace(layoutId, fragment).commit();
+      mDrawerList.setItemChecked(drawerPosition, true);
+      mDrawerList.setSelection(drawerPosition);
+      setTitle(mNavigationDrawerItemTitles[drawerPosition]);
+      mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+      mDrawerLayout.closeDrawer(mDrawerList);
+
+    } else {
+      Log.e("MainActivity", "Error in creating fragment");
+    }
+  }
+
+  @Override
+  protected void onStop() {
+ /*   if (mConnection != null)
+      unbindService(mConnection);*/
+
+    super.onStop();
+  }
 }

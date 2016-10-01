@@ -31,20 +31,18 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View listItem = convertView;
-
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-        listItem = inflater.inflate(layoutResourceId, parent, false);
+        convertView = inflater.inflate(layoutResourceId, parent, false);
 
-        ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
-        TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
+        ImageView imageViewIcon = (ImageView) convertView.findViewById(R.id.imageViewIcon);
+        TextView textViewName = (TextView) convertView.findViewById(R.id.textViewName);
 
         DataModel folder = data[position];
 
-        imageViewIcon.setImageResource(folder.icon);
-        textViewName.setText(folder.name);
+        imageViewIcon.setImageResource(folder.getIcon());
+        textViewName.setText(folder.getName());
 
-        return listItem;
+        return convertView;
     }
 }
 

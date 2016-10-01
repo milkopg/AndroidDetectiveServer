@@ -10,9 +10,9 @@
 
 
     <string-array name="navigation_drawer_items_array">
-        <item>Connect</item>
-        <item>Fixtures</item>
-        <item>Table</item>
+        <item>Settings</item>
+        <item>Read sms</item>
+        <item>Calls</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->

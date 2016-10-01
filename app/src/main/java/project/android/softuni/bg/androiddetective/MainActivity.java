@@ -196,10 +196,10 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   private DataModel[] setupDrawerItems() {
     DataModel[] drawerItem = new DataModel[4];
 
-    drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings), null);
+    drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings), getString(R.string.menu_settings));
     drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms), Constants.RECEIVER_SMS_RECEIVED);
     drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info), Constants.RECEIVER_CALL);
-    drawerItem[3] = new DataModel(R.drawable.table, "Table", null);
+    drawerItem[3] = new DataModel(R.drawable.table, "Table", "Table");
     return drawerItem;
   }
 
@@ -237,10 +237,11 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   }
 
   @Override
-  protected void onStop() {
- /*   if (mConnection != null)
-      unbindService(mConnection);*/
+  public void onDestroy() {
+    super.onDestroy();
 
-    super.onStop();
+    if (mConnection != null) {
+      unbindService(mConnection);
+    }
   }
 }

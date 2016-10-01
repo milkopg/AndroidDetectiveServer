@@ -7,19 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.adapter.RecycleViewCustomAdapter;
-import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -28,7 +22,6 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
  */
 public class ReadSmsFragment extends Fragment {
   private static final String TAG = ReadSmsFragment.class.getSimpleName();
-  private TextView mTextViewReadSms;
   private ConcurrentHashMap<String, ResponseObject> dataMap;
   private List<ResponseObject> mAdapterData;
   private RecycleViewCustomAdapter mAdapter;
@@ -37,17 +30,16 @@ public class ReadSmsFragment extends Fragment {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_read_sms, container, false);
+    View rootView = inflater.inflate(R.layout.fragment_data, container, false);
     mAdapterData  = new ArrayList<ResponseObject>(ResponseBase.getDataMap().values());
     mAdapter  = new RecycleViewCustomAdapter(mAdapterData);
     mLayoutManager = new LinearLayoutManager(getContext());
 
-    mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerViewReadSms);
+    mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerView.setAdapter(mAdapter);
     mRecyclerView.setHasFixedSize(true);
 
-    mTextViewReadSms = (TextView) rootView.findViewById(R.id.text_view_read_sms);
     //setTextViewText();
     return rootView;
   }

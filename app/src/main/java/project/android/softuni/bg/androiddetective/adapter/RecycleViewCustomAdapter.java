@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
+import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -50,7 +51,7 @@ public class RecycleViewCustomAdapter extends RecyclerView.Adapter<RecycleViewCu
   @Override
   public void onBindViewHolder(RecycleViewCustomAdapter.ViewHolder holder, int position) {
     if ((holder != null) && (mAdapterData != null) && (mAdapterData.size() > 0)) {
-      holder.mTextViewDate.setText(mAdapterData.get(position).date);
+      holder.mTextViewDate.setText(DateUtil.convertDateToShortString(mAdapterData.get(position).date));
       holder.mTextViewSendTo.setText(mAdapterData.get(position).sendTo);
       holder.mTextViewSendText.setText(mAdapterData.get(position).sendText);
     }

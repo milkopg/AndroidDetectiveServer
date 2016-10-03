@@ -5,11 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 /**
  * Created by Milko on 23.9.2016 г..
  */
 
-public class ResponseObject /*extends SugarRecord */implements Parcelable {
+public class ResponseObject /*extends SugarRecord */ implements Parcelable {
   @SerializedName("uuid")
   public String uuid;
 
@@ -17,7 +19,7 @@ public class ResponseObject /*extends SugarRecord */implements Parcelable {
   public String broadcastName;
 
   @SerializedName("date")
-  public String date;
+  public Date date;
 
   @SerializedName("send_to")
   public String sendTo;
@@ -30,7 +32,7 @@ public class ResponseObject /*extends SugarRecord */implements Parcelable {
 
   public ResponseObject() {}
 
-  public ResponseObject(String uuid, String broadcastName, String date, String sendTo, String sendText, int direction) {
+  public ResponseObject(String uuid, String broadcastName, Date date, String sendTo, String sendText, int direction) {
     this.uuid = uuid;
     this.broadcastName = broadcastName;
     this.date = date;
@@ -42,7 +44,8 @@ public class ResponseObject /*extends SugarRecord */implements Parcelable {
   protected ResponseObject(Parcel in) {
     uuid = in.readString();
     broadcastName = in.readString();
-    date = in.readString();
+    long tmpDate = in.readLong();
+    date = tmpDate != -1 ? new Date(tmpDate) : null;
     sendTo = in.readString();
     sendText = in.readString();
     direction = in.readInt();
@@ -57,7 +60,7 @@ public class ResponseObject /*extends SugarRecord */implements Parcelable {
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(uuid);
     dest.writeString(broadcastName);
-    dest.writeString(date);
+    dest.writeLong(date != null ? date.getTime() : -1L);
     dest.writeString(sendTo);
     dest.writeString(sendText);
     dest.writeInt(direction);

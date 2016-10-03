@@ -36,11 +36,13 @@ public class ReadSmsFragment extends Fragment {
     mAdapterData  = new ArrayList<ResponseObject>(ResponseBase.getDataMap().values());
 
     mAdapterDataFiltered = new ArrayList<>();
-    for (ResponseObject object : mAdapterData) {
-      if (object.broadcastName.equals(Constants.RECEIVER_SMS_RECEIVED)) {
-        mAdapterDataFiltered.add(object);
-      }
-    }
+//    for (ResponseObject object : mAdapterData) {
+//      if (object.broadcastName.equals(Constants.RECEIVER_SMS_RECEIVED)) {
+//        mAdapterDataFiltered.add(object);
+//      }
+//    }
+    mAdapterDataFiltered = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", Constants.RECEIVER_SMS_RECEIVED);
+
     mAdapter  = new RecycleViewCustomAdapter(mAdapterDataFiltered);
     mLayoutManager = new LinearLayoutManager(getContext());
 

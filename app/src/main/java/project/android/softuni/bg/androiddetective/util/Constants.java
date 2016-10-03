@@ -29,7 +29,7 @@ public class Constants {
   public static final String RECEIVER_SMS_SENT = "SmsDeliverBroadcastReceiver";
   public static final String RECEIVER_SMS_RECEIVED = "SmsReceivedBroadcastReceiver";
 
-  public static final String BROADCAST_NAME = "broacast_name";
+  public static final String BROADCAST_NAME = "BROADCAST_NAME";
   public static final String DATABASE_NAME = "android_detective_server.db";
 
   public static final String DATE_FORMAT_SHORT = "yyyy-MM-dd HH:mm";

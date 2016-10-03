@@ -44,7 +44,8 @@ public class CallerFragment extends Fragment {
 //    }
 
     //ResponseObject.findAll(ResponseObject.class);
-    mAdapterDateFiltered = ResponseObject.listAll(ResponseObject.class);
+    //mAdapterDateFiltered = ResponseObject.listAll(ResponseObject.class);
+    mAdapterDateFiltered = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", Constants.RECEIVER_CALL);
     //Book.find(Book.class, "author = ?", new String{getId()})
 
     mAdapter  = new RecycleViewCustomAdapter(mAdapterDateFiltered);

@@ -44,8 +44,8 @@ public class DetectiveServerService extends Service {
       public void run() {
         String response = server.receiveMessage();
         ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
-        if ((responseObject != null) && (responseObject.id != null))
-          ResponseBase.getDataMap().put(responseObject.id, responseObject);
+        if ((responseObject != null) && (responseObject.uuid != null))
+          ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
       }
     }).start();
    return super.onStartCommand(intent, flags, startId);

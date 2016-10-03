@@ -21,8 +21,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.List;
-
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   @Override
   public void receiveJsonData(String data) {
     ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
-    ResponseBase.getDataMap().put(responseObject.id, responseObject);
+    ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
   }
 
   @Override

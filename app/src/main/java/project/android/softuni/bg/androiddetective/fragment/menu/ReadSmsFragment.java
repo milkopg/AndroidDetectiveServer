@@ -60,7 +60,7 @@ public class ReadSmsFragment extends Fragment {
 //
 //    for (ConcurrentHashMap.Entry<String, ResponseObject> entry : dataMap.entrySet()) {
 //      if (entry.getValue().broadcastName.equals(Constants.RECEIVER_SMS_RECEIVED) || entry.getValue().broadcastName.equals(Constants.RECEIVER_SMS_SENT)) {
-//        builder.append("Id:").append(entry.getValue().id).append("\n");
+//        builder.append("Id:").append(entry.getValue().uuid).append("\n");
 //        builder.append("Broadcast name: ").append(entry.getValue().broadcastName).append("\n");
 //        builder.append("Date: ").append(entry.getValue().date).append("\n");
 //        builder.append("Send to: ").append(entry.getValue().sendTo).append("\n");

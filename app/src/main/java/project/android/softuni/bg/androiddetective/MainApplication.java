@@ -8,8 +8,12 @@ import com.orm.SugarContext;
 import com.orm.SugarDb;
 
 import java.io.File;
+import java.util.Date;
+import java.util.UUID;
 
 import project.android.softuni.bg.androiddetective.util.Constants;
+import project.android.softuni.bg.androiddetective.util.DateUtil;
+import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko on 3.10.2016 г..
@@ -25,10 +29,15 @@ public class MainApplication extends Application {
 
     if (!doesDatabaseExists) {
       SugarDb sugarDb = new SugarDb(getApplicationContext());
+      SugarContext.init(getApplicationContext());
       new File(sugarDb.getDB().getPath()).delete();
+      ResponseObject init = new ResponseObject(UUID.randomUUID().toString(), Constants.RECEIVER_CALL, DateUtil.convertDateLongToShortDate(new Date()), "1234", "Send TExt", 0);
+      init.save();
+    } else {
+      SugarContext.init(getApplicationContext());
     }
 
-    SugarContext.init(getApplicationContext());
+
   }
 
   private void initDb() {

@@ -2,8 +2,10 @@ package project.android.softuni.bg.androiddetective.webapi.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
+import com.orm.SugarRecord;
 
 import java.util.Date;
 
@@ -11,7 +13,8 @@ import java.util.Date;
  * Created by Milko on 23.9.2016 г..
  */
 
-public class ResponseObject /*extends SugarRecord */ implements Parcelable {
+public class ResponseObject extends SugarRecord implements Parcelable {
+  private static final String TAG = ResponseObject.class.getSimpleName();
   @SerializedName("uuid")
   public String uuid;
 

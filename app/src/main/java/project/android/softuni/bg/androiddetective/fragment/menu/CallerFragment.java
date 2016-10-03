@@ -37,11 +37,15 @@ public class CallerFragment extends Fragment {
 
     mAdapterData  = new ArrayList<ResponseObject>(ResponseBase.getDataMap().values());
     mAdapterDateFiltered = new ArrayList<>();
-    for (ResponseObject object : mAdapterData) {
-      if (object.broadcastName.equals(Constants.RECEIVER_CALL)) {
-        mAdapterDateFiltered.add(object);
-      }
-    }
+//    for (ResponseObject object : mAdapterData) {
+//      if (object.broadcastName.equals(Constants.RECEIVER_CALL)) {
+//        mAdapterDateFiltered.add(object);
+//      }
+//    }
+
+    //ResponseObject.findAll(ResponseObject.class);
+    mAdapterDateFiltered = ResponseObject.listAll(ResponseObject.class);
+    //Book.find(Book.class, "author = ?", new String{getId()})
 
     mAdapter  = new RecycleViewCustomAdapter(mAdapterDateFiltered);
     mLayoutManager = new LinearLayoutManager(getContext());

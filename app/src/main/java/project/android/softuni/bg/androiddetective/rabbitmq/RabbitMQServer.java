@@ -72,6 +72,7 @@ public class RabbitMQServer {
           ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
           if (responseObject != null) {
             ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
+            responseObject.save();
             NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
           }
         } catch (Exception e) {

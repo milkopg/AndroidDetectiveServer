@@ -30,4 +30,15 @@ public class DateUtil {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
     return dateFormat.format(date);
   }
+
+  public static Date convertDateLongToShortDate(Date date) {
+    DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT_SHORT);
+    String dateString = convertDateToShortString(date);
+    try {
+      return dateFormat.parse(dateString);
+    } catch (ParseException e) {
+      Log.e(TAG, "convertDateLongToShortDate: "  + e);
+    }
+    return date;
+  }
 }

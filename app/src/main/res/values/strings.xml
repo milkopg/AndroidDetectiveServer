@@ -23,4 +23,6 @@
     <string name="send_text">Send text</string>
     <string name="notes">Notes</string>
     <string name="android_detective_server">Android Detective Server</string>
+    <string name="from_date">From date</string>
+    <string name="to_date">To date</string>
 </resources>

@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.adapter.RecycleViewCustomAdapter;
+import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -24,6 +25,7 @@ public class ReadSmsFragment extends Fragment {
   private static final String TAG = ReadSmsFragment.class.getSimpleName();
   private ConcurrentHashMap<String, ResponseObject> dataMap;
   private List<ResponseObject> mAdapterData;
+  private List<ResponseObject> mAdapterDataFiltered;
   private RecycleViewCustomAdapter mAdapter;
   private RecyclerView.LayoutManager mLayoutManager;
   private RecyclerView mRecyclerView;
@@ -32,7 +34,14 @@ public class ReadSmsFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_data, container, false);
     mAdapterData  = new ArrayList<ResponseObject>(ResponseBase.getDataMap().values());
-    mAdapter  = new RecycleViewCustomAdapter(mAdapterData);
+
+    mAdapterDataFiltered = new ArrayList<>();
+    for (ResponseObject object : mAdapterData) {
+      if (object.broadcastName.equals(Constants.RECEIVER_SMS_RECEIVED)) {
+        mAdapterDataFiltered.add(object);
+      }
+    }
+    mAdapter  = new RecycleViewCustomAdapter(mAdapterDataFiltered);
     mLayoutManager = new LinearLayoutManager(getContext());
 
     mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);

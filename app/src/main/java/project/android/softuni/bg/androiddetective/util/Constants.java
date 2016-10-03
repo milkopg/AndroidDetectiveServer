@@ -30,4 +30,6 @@ public class Constants {
   public static final String RECEIVER_SMS_RECEIVED = "SmsReceivedBroadcastReceiver";
 
   public static final String BROADCAST_NAME = "broacast_name";
+  public static final String DATABASE_NAME = "android_detective_server.db";
+
 }

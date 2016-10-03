@@ -42,11 +42,12 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   private String[] mNavigationDrawerItemTitles;
   private DrawerLayout mDrawerLayout;
   private ListView mDrawerList;
-  Toolbar toolbar;
+  private Toolbar toolbar;
   private CharSequence mDrawerTitle;
   private CharSequence mTitle;
   private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
   private ServiceConnection mConnection;
+  private MainApplication app;
 
   @Override
   public void receiveJsonData(String data) {
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    app = (MainApplication) getApplication();
+    //setTitle(getString(R.string.android_detective_server));
+
     mTitle = mDrawerTitle = getTitle();
     mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

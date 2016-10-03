@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.orm.SugarRecord;
 
 import java.util.Date;
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * Created by Milko on 23.9.2016 г..
  */
 
-public class ResponseObject extends ResponseBase implements Parcelable {
+public class ResponseObject extends SugarRecord implements Parcelable {
   @SerializedName("id")
   public String id;
 
@@ -29,6 +30,8 @@ public class ResponseObject extends ResponseBase implements Parcelable {
 
   @SerializedName("direction")
   public int direction;
+
+  public ResponseObject() {}
 
   public ResponseObject(String id, String broadcastName, String date, String sendTo, String sendText, int direction) {
     this.id = id;

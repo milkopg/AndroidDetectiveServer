@@ -14,12 +14,12 @@ public class ResponseBase {
     return dataMap;
   }
 
-  public static ResponseBase putIfAbsent(String key, ResponseObject value) {
+  public static ResponseObject putIfAbsent(String key, ResponseObject value) {
     if (key != null) return null;
     return dataMap.putIfAbsent(key, value);
   }
 
-  public static ResponseBase getObject(String key) {
+  public static ResponseObject getObject(String key) {
     if (key != null) return null;
     return dataMap.get(key) ;
   }

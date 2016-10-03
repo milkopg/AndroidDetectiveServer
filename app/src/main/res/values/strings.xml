@@ -22,4 +22,5 @@
     <string name="send_to">Send to</string>
     <string name="send_text">Send text</string>
     <string name="notes">Notes</string>
+    <string name="android_detective_server">Android Detective Server</string>
 </resources>

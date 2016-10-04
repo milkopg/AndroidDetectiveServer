@@ -206,11 +206,18 @@ public class CallerFragment extends BaseFragment implements View.OnClickListener
     editTextFromDate.setOnClickListener(this);
     editTextToDate.setOnClickListener(this);
 
+//    fromCalendar.set(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 1, 0, 0, 0);
+//    toCalendar.set(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 23, 59, 59);
+
+    initCalendarValues(fromCalendar, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 1, 0 , 0, 0);
+    initCalendarValues(toCalendar, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), fromCalendar.get(Calendar.MONTH), 23, 59, 59);
+
 
     fromDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
 
       public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        fromCalendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+        //fromCalendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+        initCalendarValues(fromCalendar, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 1, 0 , 0, 0);
         editTextFromDate.setText(dateFormatter.format(fromCalendar.getTime()));
         filterData();
       }
@@ -221,16 +228,25 @@ public class CallerFragment extends BaseFragment implements View.OnClickListener
 
     toDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
       public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        toCalendar.set(year, monthOfYear, dayOfMonth, 23, 59, 59);
+        //toCalendar.set(year, monthOfYear, dayOfMonth, 23, 59, 59);
+        initCalendarValues(toCalendar, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), dayOfMonth, 23, 59, 59);
         filterData();
         editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
       }
 
     }, toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
     toDatePickerDialog.updateDate(toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
+
+
+
     editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
   }
 
+  private void initCalendarValues(Calendar calendar, int year, int month, int day, int hours, int minutes, int seconds) {
+    //fromCalendar.set(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 1, 0, 0, 0);
+    //toCalendar.set(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 23, 59, 59);
+    calendar.set(year, month, day, hours , minutes, seconds);
+  }
 
   protected void filterData() {
     if ((fromCalendar) == null || (toCalendar == null)) return;

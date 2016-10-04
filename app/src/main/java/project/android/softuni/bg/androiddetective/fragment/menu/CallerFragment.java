@@ -24,116 +24,19 @@ import java.util.Locale;
 
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.adapter.RecycleViewCustomAdapter;
+import project.android.softuni.bg.androiddetective.fragment.base.BaseFragment;
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko G on 22/09/2016.
  */
-public class CallerFragment extends Fragment implements View.OnClickListener {
-  private static final String TAG = CallerFragment.class.getSimpleName();
-  private List<ResponseObject> mAdapterData;
-  private RecycleViewCustomAdapter mAdapter;
-  private RecyclerView.LayoutManager mLayoutManager;
-  private RecyclerView mRecyclerView;
-  private EditText editTextFromDate;
-  private EditText editTextToDate;
-  private DatePickerDialog fromDatePickerDialog;
-  private DatePickerDialog toDatePickerDialog;
-  private SimpleDateFormat dateFormatter;
-
-  private Calendar fromCalendar;
-  private Calendar toCalendar;
-
+public class CallerFragment extends BaseFragment/* implements View.OnClickListener*/ {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_data, container, false);
-
-    editTextFromDate = (EditText) rootView.findViewById(R.id.editTextFromDate);
-    editTextFromDate.setInputType(InputType.TYPE_NULL);
-    editTextFromDate.requestFocus();
-
-    editTextToDate = (EditText) rootView.findViewById(R.id.editTextToDate);
-    editTextToDate.setInputType(InputType.TYPE_NULL);
-    editTextToDate.requestFocus();
-
-    dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT_SHORT_DATE, Locale.US);
-
-    mAdapterData = new ArrayList<>();
-    mAdapterData = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", Constants.RECEIVER_CALL);
-
-    mAdapter = new RecycleViewCustomAdapter(mAdapterData);
-    mLayoutManager = new LinearLayoutManager(getContext());
-
-    mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-    mRecyclerView.setLayoutManager(mLayoutManager);
-    mRecyclerView.setAdapter(mAdapter);
-    mRecyclerView.setHasFixedSize(false);
-
-    setDateTimeField();
-
-    return rootView;
-  }
-
-  private void setDateTimeField() {
-
-    fromCalendar = Calendar.getInstance();
-    fromCalendar.set(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 1);
-    toCalendar = Calendar.getInstance();
-
-    editTextFromDate.setOnClickListener(this);
-    editTextToDate.setOnClickListener(this);
-
-
-    fromDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-
-      public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        fromCalendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-        editTextFromDate.setText(dateFormatter.format(fromCalendar.getTime()));
-        filterData();
-      }
-
-    }, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), fromCalendar.get(Calendar.DAY_OF_MONTH));
-    fromDatePickerDialog.updateDate(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH)+1, 1);
-    editTextFromDate.setText(dateFormatter.format(fromCalendar.getTime()));
-
-    toDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-      public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        toCalendar.set(year, monthOfYear, dayOfMonth, 23, 59, 59);
-        filterData();
-        editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
-      }
-
-    }, toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
-    toDatePickerDialog.updateDate(toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
-    editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
-  }
-
-  @Override
-  public void onClick(View view) {
-    if (view.getId() == R.id.editTextFromDate) {
-      fromDatePickerDialog.show();
-    } else if (view.getId() == R.id.editTextToDate) {
-      toDatePickerDialog.show();
-    }
-  }
-
-  private void filterData() {
-    if ((fromCalendar) == null || (toCalendar == null)) return;
-    Select<ResponseObject> select = Select.from(ResponseObject.class).where(Condition.prop(Constants.BROADCAST_NAME).like(Constants.RECEIVER_CALL), Condition.prop("DATE").gt(fromCalendar.getTime().getTime()), Condition.prop("DATE").lt(toCalendar.getTime().getTime()));
-
-    if (select != null) {
-      Iterator<ResponseObject> iterator = select.iterator();
-      if (iterator != null && iterator.hasNext())
-        mAdapterData.clear();
-
-      while (iterator.hasNext()) {
-        mAdapterData.add(iterator.next());
-        if (!iterator.hasNext()) {
-          mAdapter.notifyDataSetChanged();
-        }
-      }
-    }
+    Bundle bundle = new Bundle();
+    bundle.putString(Constants.BROADCAST_NAME, Constants.RECEIVER_CALL);
+    return super.onCreateView(inflater, container, bundle);
   }
 }

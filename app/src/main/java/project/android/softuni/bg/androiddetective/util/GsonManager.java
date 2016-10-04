@@ -22,7 +22,7 @@ public class GsonManager {
   private static final String TAG = GsonManager.class.getSimpleName();
 
   public static String convertObjectToGsonString(ResponseBase data) {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT).create();
     return gson.toJson(data);
   }
 
@@ -32,7 +32,7 @@ public class GsonManager {
   }
 
   public static ResponseObject convertGsonStringToObject(String json) {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT).create();
     ResponseObject data = null;
     try {
       data = gson.fromJson(json, ResponseObject.class);
@@ -43,7 +43,7 @@ public class GsonManager {
   }
 
   public static ConcurrentHashMap<String, ResponseObject> convertGsonStringToObjectMap(String json) {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT).create();
     ConcurrentHashMap<String, ResponseObject>  objectMap = new ConcurrentHashMap<>();
     try {
       objectMap = gson.fromJson(json, objectMap.getClass());

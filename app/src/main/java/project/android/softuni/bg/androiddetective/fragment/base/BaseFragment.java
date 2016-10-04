@@ -35,8 +35,8 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
  */
 
 public abstract class BaseFragment extends android.support.v4.app.Fragment{
+  private List<ResponseObject> mAdapterData;
   private static final String TAG = CallerFragment.class.getSimpleName();
-  //private List<ResponseObject> mAdapterData;
   protected RecycleViewCustomAdapter mAdapter;
   protected RecyclerView.LayoutManager mLayoutManager;
   protected RecyclerView mRecyclerView;
@@ -63,11 +63,6 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment{
     editTextToDate.requestFocus();
 
     dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT_SHORT_DATE, Locale.US);
-
-//    mAdapterData = new ArrayList<>();
-//    mAdapterData = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", Constants.RECEIVER_CALL);
-
-    //mAdapter = new RecycleViewCustomAdapter(mAdapterData);
     mLayoutManager = new LinearLayoutManager(getContext());
 
     mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
@@ -75,62 +70,14 @@ public abstract class BaseFragment extends android.support.v4.app.Fragment{
     mRecyclerView.setAdapter(mAdapter);
     mRecyclerView.setHasFixedSize(false);
 
-   // setDateTimeField();
-
     return rootView;
   }
 
-//  private void setDateTimeField() {
-//
-//    fromCalendar = Calendar.getInstance();
-//    fromCalendar.set(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), 1);
-//    toCalendar = Calendar.getInstance();
-//
-////    editTextFromDate.setOnClickListener(this);
-////    editTextToDate.setOnClickListener(this);
-//
-//
-//    fromDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-//
-//      public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//        fromCalendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-//        editTextFromDate.setText(dateFormatter.format(fromCalendar.getTime()));
-//        filterData();
-//      }
-//
-//    }, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), fromCalendar.get(Calendar.DAY_OF_MONTH));
-//    fromDatePickerDialog.updateDate(fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH)+1, 1);
-//    editTextFromDate.setText(dateFormatter.format(fromCalendar.getTime()));
-//
-//    toDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-//      public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//        toCalendar.set(year, monthOfYear, dayOfMonth, 23, 59, 59);
-//        filterData();
-//        editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
-//      }
-//
-//    }, toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
-//    toDatePickerDialog.updateDate(toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
-//    editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
-//  }
-//
-//
-//  protected List<ResponseObject> filterData() {
-//    if ((fromCalendar) == null || (toCalendar == null)) return mAdapterData;
-//    Select<ResponseObject> select = Select.from(ResponseObject.class).where(Condition.prop(Constants.BROADCAST_NAME).like(Constants.RECEIVER_CALL), Condition.prop("DATE").gt(fromCalendar.getTime().getTime()), Condition.prop("DATE").lt(toCalendar.getTime().getTime()));
-//
-//    if (select != null) {
-//      Iterator<ResponseObject> iterator = select.iterator();
-//      if (iterator != null && iterator.hasNext())
-//        mAdapterData.clear();
-//
-//      while (iterator.hasNext()) {
-//        mAdapterData.add(iterator.next());
-//        if (!iterator.hasNext()) {
-//          mAdapter.notifyDataSetChanged();
-//        }
-//      }
-//    }
-//    return mAdapterData;
-//  }
+  protected void setAdapterData(List<ResponseObject> adapterData) {
+    mAdapterData = adapterData;
+  }
+
+  protected abstract void populateData(String receiverName);
+  protected abstract void initDateFields();
+
 }

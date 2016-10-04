@@ -6,8 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
@@ -22,7 +20,7 @@ public class GsonManager {
   private static final String TAG = GsonManager.class.getSimpleName();
 
   public static String convertObjectToGsonString(ResponseBase data) {
-    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT).create();
+    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
     return gson.toJson(data);
   }
 
@@ -32,7 +30,7 @@ public class GsonManager {
   }
 
   public static ResponseObject convertGsonStringToObject(String json) {
-    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT).create();
+    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
     ResponseObject data = null;
     try {
       data = gson.fromJson(json, ResponseObject.class);
@@ -43,7 +41,7 @@ public class GsonManager {
   }
 
   public static ConcurrentHashMap<String, ResponseObject> convertGsonStringToObjectMap(String json) {
-    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT).create();
+    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
     ConcurrentHashMap<String, ResponseObject>  objectMap = new ConcurrentHashMap<>();
     try {
       objectMap = gson.fromJson(json, objectMap.getClass());

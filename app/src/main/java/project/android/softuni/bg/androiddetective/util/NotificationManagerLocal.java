@@ -17,6 +17,7 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 public class NotificationManagerLocal {
   private static Context mContext;
   private static NotificationManagerLocal instance;
+  private static int number = 0;
 
   private NotificationManagerLocal() {
   }
@@ -39,7 +40,8 @@ public class NotificationManagerLocal {
     mBuilder.setContentIntent(notificationPI);
 
     final android.app.NotificationManager notificationManager = (android.app.NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-    notificationManager.notify(0, mBuilder.build());
+    notificationManager.notify(number, mBuilder.build());
+    number++;
   }
 
   public static NotificationManagerLocal getInstance(Context context) {

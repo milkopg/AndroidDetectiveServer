@@ -7,14 +7,12 @@
 
     <!--android:background="@drawable/border"-->
     <TextView
-        android:text="2016-10-03 08:37:00.0"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewDate"
         android:layout_weight="1.95"/>
 
     <TextView
-        android:text="0899850018"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewSendTo"

@@ -25,4 +25,8 @@
     <string name="android_detective_server">Android Detective Server</string>
     <string name="from_date">From date</string>
     <string name="to_date">To date</string>
+    <string name="swipe_right">Swipe Right</string>
+    <string name="swipe_left">Swipe Left</string>
+    <string name="swipe_down">Swipe down</string>
+    <string name="swipe_up">SWIPE_UP</string>
 </resources>

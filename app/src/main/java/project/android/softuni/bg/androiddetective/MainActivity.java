@@ -17,9 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
@@ -27,6 +29,7 @@ import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
+import project.android.softuni.bg.androiddetective.gestures.GestureFilter;
 import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.Constants;
@@ -35,7 +38,8 @@ import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener {
+public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener, GestureFilter.SimpleGestureListener
+{
 
   private String[] mNavigationDrawerItemTitles;
   private DrawerLayout mDrawerLayout;
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
   private ServiceConnection mConnection;
   private MainApplication app;
+  private GestureFilter detector;
 
   @Override
   public void receiveJsonData(String data) {
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     mDrawerList = (ListView) findViewById(R.id.left_drawer);
     DataModel[] mDrawerItem = setupDrawerItems();
+    detector = new GestureFilter(this, this);
 
     setupToolbar();
 
@@ -105,6 +111,50 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
     checkNotificationIntent(mDrawerItem);
   }
+
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent motionEvent) {
+    this.detector.onTouchEvent(motionEvent);
+    return super.dispatchTouchEvent(motionEvent);
+  }
+
+  @Override
+  public void onSwipe(int direction) {
+    String text = "";
+    int position = 0;
+
+    switch (direction) {
+      case GestureFilter.SWIPE_RIGHT :
+        text = getString(R.string.swipe_right);
+        break;
+      case GestureFilter.SWIPE_LEFT :
+        text = getString(R.string.swipe_left);
+        break;
+      case GestureFilter.SWIPE_DOWN :
+        text = getString(R.string.swipe_down);
+        position = 1;
+        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+        break;
+      case GestureFilter.SWIPE_UP :
+        text = getString(R.string.swipe_up);
+        position = 2;
+        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+        break;
+    }
+    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+  }
+
+  @Override
+  public void onDoubleTap() {
+    //TODO
+  }
+
+  @Override
+  public void onLongPress() {
+    int position = 0;
+    replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+  }
+
 
   private void checkNotificationIntent(DataModel[] mDrawerItem) {
     String receiverName;

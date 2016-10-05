@@ -166,11 +166,11 @@ public class GestureFilter extends GestureDetector.SimpleOnGestureListener{
     super.onLongPress(e);
   }
 
-  @Override
-  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-    Toast.makeText(context, "onScroll", Toast.LENGTH_SHORT).show();
-    return super.onScroll(e1, e2, distanceX, distanceY);
-  }
+//  @Override
+//  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//    Toast.makeText(context, "onScroll", Toast.LENGTH_SHORT).show();
+//    return super.onScroll(e1, e2, distanceX, distanceY);
+//  }
 
   public interface SimpleGestureListener{
     void onSwipe(int direction);

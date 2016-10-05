@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     setupDrawerToggle();
 
 
+
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -111,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
     checkNotificationIntent(mDrawerItem);
   }
+
+
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent motionEvent) {
@@ -296,5 +300,16 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     if (mConnection != null) {
       unbindService(mConnection);
     }
+
+
+}
+
+ private static class MyPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      Log.d("TAG", "PINCH! OUCH!");
+      return true;
+    }
   }
+
 }

@@ -1,6 +1,7 @@
 package project.android.softuni.bg.androiddetective.rabbitmq;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -11,6 +12,7 @@ import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.IOException;
 
+import project.android.softuni.bg.androiddetective.util.BitmapUtil;
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.NotificationManagerLocal;
@@ -32,7 +34,7 @@ public class RabbitMQServer {
     this.mContext = context;
   }
 
-  public String receiveMessage() {
+  public Object receiveMessage() {
     String message = null;
     Channel channel;
     Connection connection = null;
@@ -66,21 +68,32 @@ public class RabbitMQServer {
                 .build();
 
         try {
-          message = new String(delivery.getBody(), "UTF-8");
-          Log.d(TAG, "Received message: " + message);
-          response = message;
-          ResponseObject responseObject = GsonManager.convertGsonStringToObject(response);
-          if (responseObject != null) {
-            ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
-            responseObject.save();
-            NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
+          if (isMessage(delivery.getBody())) {
+            message = new String(delivery.getBody(), "UTF-8");
+            Log.d(TAG, "Received message: " + message);
+            response = message;
+
+            ResponseObject responseObject = GsonManager.convertGsonStringToObject(response.toString());
+            if ((responseObject != null) && (responseObject.uuid != null)) {
+              if (responseObject != null) {
+                ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
+                responseObject.save();
+                NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
+              }
+              ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
+              responseObject.save();
+            }
+
+          } else {
+            return  delivery.getBody();
           }
+
         } catch (Exception e) {
           System.out.println(" [.] " + e.toString());
           response = "";
         } finally {
           try {
-            channel.basicPublish("", props.getReplyTo(), replyProps, response.getBytes("UTF-8"));
+            channel.basicPublish("", props.getReplyTo(), replyProps, (isMessage(delivery.getBody()) ? response.getBytes("UTF-8") : delivery.getBody()));
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
           } catch (IOException e) {
             Log.e(TAG, "receiveMessage: cannot basic publish or basicAck - " + e);
@@ -100,6 +113,18 @@ public class RabbitMQServer {
       }
     }
     return message;
+  }
+
+  private boolean isMessage(byte[] message) {
+    boolean isMessage = false;
+    try {
+      String response = new String(message, "UTF-8");
+      isMessage = true;
+    }catch (Exception e) {
+      isMessage = false;
+      Log.d(TAG, "isMessage: " + isMessage);
+    }
+    return isMessage;
   }
 
   public static RabbitMQServer getInstance(Context context) {

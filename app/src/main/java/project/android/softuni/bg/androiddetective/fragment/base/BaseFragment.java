@@ -1,20 +1,33 @@
 package project.android.softuni.bg.androiddetective.fragment.base;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,7 +90,29 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     setDateTimeField();
 
+    setupPinch();
+
     return rootView;
+  }
+
+  private void setupPinch() {
+   final ScaleGestureDetector mScaleDetector =
+            new ScaleGestureDetector(getContext(), new MyPinchListener());
+    mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        mScaleDetector.onTouchEvent(event);
+        return true;
+      }
+    });
+  }
+
+  static class MyPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      Log.d("TAG", "PINCH! OUCH!");
+      return true;
+    }
   }
 
   private void setDateTimeField() {
@@ -145,6 +180,46 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
       }
     }
   }
+
+//  private String saveToInternalStorage(Bitmap bitmapImage){
+//    ContextWrapper cw = new ContextWrapper(getContext());
+//    // path to /data/data/yourapp/app_data/imageDir
+//    File directory = cw.getDir("images", Context.MODE_PRIVATE);
+//    // Create imageDir
+//    File mypath=new File(directory,"profile.jpg");
+//
+//    FileOutputStream fos = null;
+//    try {
+//      fos = new FileOutputStream(mypath);
+//      // Use the compress method on the BitMap object to write image to the OutputStream
+//      bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    } finally {
+//      try {
+//        fos.close();
+//      } catch (IOException e) {
+//        Log.e(TAG, "saveToInternalStorage: cannot close FileOutputStream" + e);
+//        e.printStackTrace();
+//      }
+//    }
+//    return directory.getAbsolutePath();
+//  }
+//
+//  private void loadImageFromStorage(String path) {
+//
+//    try {
+//      File f=new File(path, "profile.jpg");
+//      Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+//      ImageView img=(ImageView)findViewById(R.id.imgPicker);
+//      img.setImageBitmap(b);
+//    }
+//    catch (FileNotFoundException e) {
+//      Log.e(TAG, "loadImageFromStorage: FileNotFoundException" + e);
+//    }
+//
+//  }
+
 
   protected void setBroadcastName(String broadcastName) {
     this.mBroadcastName = broadcastName;

@@ -2,7 +2,6 @@ package project.android.softuni.bg.androiddetective.webapi.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
@@ -33,15 +32,23 @@ public class ResponseObject extends SugarRecord implements Parcelable {
   @SerializedName("direction")
   public int direction;
 
+  @SerializedName("image_name")
+  public String imageName;
+
+  @SerializedName("image_path")
+  public String imagePath;
+
   public ResponseObject() {}
 
-  public ResponseObject(String uuid, String broadcastName, Date date, String sendTo, String sendText, int direction) {
+  public ResponseObject(String uuid, String broadcastName, Date date, String sendTo, String sendText, int direction, String imageName, String imagePath) {
     this.uuid = uuid;
     this.broadcastName = broadcastName;
     this.date = date;
     this.sendTo = sendTo;
     this.sendText = sendText;
     this.direction = direction;
+    this.imageName = imageName;
+    this.imagePath = imagePath;
   }
 
   protected ResponseObject(Parcel in) {
@@ -52,6 +59,8 @@ public class ResponseObject extends SugarRecord implements Parcelable {
     sendTo = in.readString();
     sendText = in.readString();
     direction = in.readInt();
+    imageName = in.readString();
+    imagePath = in.readString();
   }
 
   @Override

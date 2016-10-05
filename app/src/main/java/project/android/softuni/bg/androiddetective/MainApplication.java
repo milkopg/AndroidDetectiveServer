@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.DateUtil;
+import project.android.softuni.bg.androiddetective.webapi.model.Counters;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
@@ -31,8 +32,10 @@ public class MainApplication extends Application {
       SugarDb sugarDb = new SugarDb(getApplicationContext());
       SugarContext.init(getApplicationContext());
       new File(sugarDb.getDB().getPath()).delete();
-      ResponseObject init = new ResponseObject(UUID.randomUUID().toString(), Constants.RECEIVER_CALL, DateUtil.convertDateLongToShortDate(new Date()), "1234", "Send TExt", 0);
+      ResponseObject init = new ResponseObject(UUID.randomUUID().toString(), Constants.RECEIVER_CALL, DateUtil.convertDateLongToShortDate(new Date()), "1234", "Send TExt", 0, null, null);
       init.save();
+      Counters counter = new Counters(Constants.RECEIVER_CAMERA, 1L);
+      counter.save();
     } else {
       SugarContext.init(getApplicationContext());
     }

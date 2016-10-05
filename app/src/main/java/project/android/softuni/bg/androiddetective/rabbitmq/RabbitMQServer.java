@@ -11,11 +11,16 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import project.android.softuni.bg.androiddetective.util.BitmapUtil;
 import project.android.softuni.bg.androiddetective.util.Constants;
+import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.NotificationManagerLocal;
+import project.android.softuni.bg.androiddetective.webapi.model.Counters;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -68,24 +73,37 @@ public class RabbitMQServer {
                 .build();
 
         try {
-          if (isMessage(delivery.getBody())) {
+          if (isJsonMessage(delivery.getBody())) {
             message = new String(delivery.getBody(), "UTF-8");
             Log.d(TAG, "Received message: " + message);
             response = message;
 
             ResponseObject responseObject = GsonManager.convertGsonStringToObject(response.toString());
             if ((responseObject != null) && (responseObject.uuid != null)) {
-              if (responseObject != null) {
-                ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
-                responseObject.save();
-                NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
-              }
               ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
               responseObject.save();
+              ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
+              responseObject.save();
+              NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
+
             }
 
           } else {
-            return  delivery.getBody();
+
+
+            Bitmap bitmap = BitmapUtil.getImage(delivery.getBody());
+            List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
+            long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter()  : 1;
+            Counters count = Counters.findById(Counters.class, counter);
+            count.setCounter(counter + 1);
+            count.save();
+            String imageName = "image_" + counter;
+            String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
+            ResponseObject responseObject = new ResponseObject(UUID.randomUUID().toString(), Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", "", 0, imageName, imagePath );
+            responseObject.save();
+            NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
+
+            //delivery.getBody();
           }
 
         } catch (Exception e) {
@@ -93,7 +111,7 @@ public class RabbitMQServer {
           response = "";
         } finally {
           try {
-            channel.basicPublish("", props.getReplyTo(), replyProps, (isMessage(delivery.getBody()) ? response.getBytes("UTF-8") : delivery.getBody()));
+            channel.basicPublish("", props.getReplyTo(), replyProps, (isJsonMessage(delivery.getBody()) ? response.getBytes("UTF-8") : delivery.getBody()));
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
           } catch (IOException e) {
             Log.e(TAG, "receiveMessage: cannot basic publish or basicAck - " + e);
@@ -115,16 +133,8 @@ public class RabbitMQServer {
     return message;
   }
 
-  private boolean isMessage(byte[] message) {
-    boolean isMessage = false;
-    try {
-      String response = new String(message, "UTF-8");
-      isMessage = true;
-    }catch (Exception e) {
-      isMessage = false;
-      Log.d(TAG, "isMessage: " + isMessage);
-    }
-    return isMessage;
+  private boolean isJsonMessage (byte[] message) {
+    return (message != null && message.length < 50000);
   }
 
   public static RabbitMQServer getInstance(Context context) {

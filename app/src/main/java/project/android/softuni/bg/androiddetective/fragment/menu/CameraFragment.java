@@ -21,6 +21,7 @@ public class CameraFragment extends Fragment{
     View rootView = inflater.inflate(R.layout.recycleview_image_row, container, false);
     Bundle bundle = new Bundle();
     bundle.putString(Constants.BROADCAST_NAME, Constants.RECEIVER_SMS_RECEIVED);
+    bundle.putInt(Constants.LAYOUT_ID, R.layout.fragment_camera);
 
     return rootView;
   }

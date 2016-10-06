@@ -13,6 +13,7 @@
         <item>Settings</item>
         <item>Read sms</item>
         <item>Calls</item>
+        <item>Camera pictures</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -29,4 +30,5 @@
     <string name="swipe_left">Swipe Left</string>
     <string name="swipe_down">Swipe down</string>
     <string name="swipe_up">SWIPE_UP</string>
+    <string name="camera_pictures">Camera pictures</string>
 </resources>

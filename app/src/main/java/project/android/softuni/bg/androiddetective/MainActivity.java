@@ -27,6 +27,7 @@ import android.widget.Toast;
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.CameraFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
         fragment = new CallerFragment();
         break;
       case 3:
-        fragment = new TableFragment();
+        fragment = new CameraFragment();
         break;
 
       default:
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings), getString(R.string.menu_settings));
     drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms), Constants.RECEIVER_SMS_RECEIVED);
     drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info), Constants.RECEIVER_CALL);
-    drawerItem[3] = new DataModel(R.drawable.table, "Table", "Table");
+    drawerItem[3] = new DataModel(R.mipmap.camera, getString(R.string.camera_pictures), Constants.RECEIVER_CAMERA);
     return drawerItem;
   }
 

@@ -77,7 +77,7 @@ public class RabbitMQServer {
 
         try {
           if (isJsonMessage(props.getContentType())) {
-            processRegularResponse(responseArray);
+            response = processRegularResponse(responseArray);
           } else {
             processImageResponse(responseArray, replyProps.getCorrelationId());
           }
@@ -107,7 +107,7 @@ public class RabbitMQServer {
     }
   }
 
-  private void processRegularResponse(byte[] response) {
+  private String processRegularResponse(byte[] response) {
     String message = null;
     try {
       message = new String(response, "UTF-8");
@@ -117,6 +117,7 @@ public class RabbitMQServer {
     Log.d(TAG, "Received message: " + message);
     ResponseObject responseObject = GsonManager.convertGsonStringToObject(message.toString());
     persistObjectAndShowNotification(responseObject);
+    return message;
   }
 
   private void processImageResponse(byte[] response, String correlationId) {
@@ -156,7 +157,8 @@ public class RabbitMQServer {
   }
 
   private boolean isJsonMessage(String contentType) {
-    return (contentType != null && !contentType.equals(Constants.RABBIT_MQ_CONTENT_TYPE));
+    if (contentType == null) return true;
+    return !(contentType != null && contentType.equals(Constants.RABBIT_MQ_CONTENT_TYPE));
   }
 
   public static RabbitMQServer getInstance(Context context) {

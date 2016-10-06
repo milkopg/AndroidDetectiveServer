@@ -14,7 +14,7 @@ import project.android.softuni.bg.androiddetective.R;
 public class TableFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.recycleview_template, container, false);
+    View rootView = inflater.inflate(R.layout.recycleview_table_datepicker, container, false);
     return rootView;
   }
 

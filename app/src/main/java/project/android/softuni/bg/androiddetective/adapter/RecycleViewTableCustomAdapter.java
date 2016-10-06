@@ -6,22 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.util.DateUtil;
-import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko on 30.9.2016 г..
  */
 
-public class RecycleViewCustomAdapter extends RecyclerView.Adapter<RecycleViewCustomAdapter.ViewHolder>{
+public class RecycleViewTableCustomAdapter extends RecyclerView.Adapter<RecycleViewTableCustomAdapter.ViewHolder>{
   List<ResponseObject> mAdapterData;
 
-  public RecycleViewCustomAdapter(List<ResponseObject> mAdapterData) {
+  public RecycleViewTableCustomAdapter(List<ResponseObject> mAdapterData) {
     this.mAdapterData = mAdapterData;
   }
 
@@ -29,7 +27,6 @@ public class RecycleViewCustomAdapter extends RecyclerView.Adapter<RecycleViewCu
     private TextView mTextViewDate;
     private TextView mTextViewSendTo;
     private TextView mTextViewSendText;
-    private TextView mTextViewNotes;
 
     public ViewHolder(View itemView) {
       super(itemView);
@@ -42,14 +39,14 @@ public class RecycleViewCustomAdapter extends RecyclerView.Adapter<RecycleViewCu
 
 
   @Override
-  public RecycleViewCustomAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleview_template, parent, false);
+  public RecycleViewTableCustomAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycleview_table_datepicker, parent, false);
     ViewHolder vh = new ViewHolder(view);
     return vh;
   }
 
   @Override
-  public void onBindViewHolder(RecycleViewCustomAdapter.ViewHolder holder, int position) {
+  public void onBindViewHolder(RecycleViewTableCustomAdapter.ViewHolder holder, int position) {
     if ((holder != null) && (mAdapterData != null) && (mAdapterData.size() > 0)) {
       holder.mTextViewDate.setText(DateUtil.convertDateToShortString(mAdapterData.get(position).date));
       holder.mTextViewSendTo.setText(mAdapterData.get(position).sendTo);

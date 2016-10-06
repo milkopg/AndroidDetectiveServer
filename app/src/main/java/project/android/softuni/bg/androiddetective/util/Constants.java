@@ -34,6 +34,7 @@ public class Constants {
 
   public static final String BROADCAST_NAME = "BROADCAST_NAME";
   public static final String DATABASE_NAME = "android_detective_server.db";
+  public static final String LAYOUT_ID = "layout_id";
 
   public static final String DATE_FORMAT_SHORT_DATE_TIME = "yyyy-MM-dd HH:mm";
   public static final String DATE_FORMAT_SHORT_DATE = "dd-MM-yyyy";

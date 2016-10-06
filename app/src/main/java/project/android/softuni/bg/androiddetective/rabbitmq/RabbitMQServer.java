@@ -76,7 +76,7 @@ public class RabbitMQServer {
                 .build();
 
         try {
-          if (isJsonMessage(props.getContentType())) {
+          if (isJsonMessage(replyProps.getContentType())) {
             response = processRegularResponse(responseArray);
           } else {
             processImageResponse(responseArray, replyProps.getCorrelationId());

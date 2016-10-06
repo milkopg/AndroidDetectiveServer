@@ -1,10 +1,6 @@
 package project.android.softuni.bg.androiddetective.fragment.base;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,16 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 
 import project.android.softuni.bg.androiddetective.R;
-import project.android.softuni.bg.androiddetective.adapter.RecycleViewCustomAdapter;
+import project.android.softuni.bg.androiddetective.adapter.RecycleViewTableCustomAdapter;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
@@ -49,7 +39,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
   private static final String TAG = CallerFragment.class.getSimpleName();
   private List<ResponseObject> mAdapterData;
   private String mBroadcastName;
-  private RecycleViewCustomAdapter mAdapter;
+  private RecycleViewTableCustomAdapter mAdapter;
   private RecyclerView.LayoutManager mLayoutManager;
   private RecyclerView mRecyclerView;
   private EditText editTextFromDate;
@@ -64,7 +54,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
-    View rootView = inflater.inflate(R.layout.fragment_data, container, false);
+    int layoutId = bundle.getInt(Constants.LAYOUT_ID);
+    View rootView = inflater.inflate(layoutId, container, false);
 
     editTextFromDate = (EditText) rootView.findViewById(R.id.editTextFromDate);
     editTextFromDate.setInputType(InputType.TYPE_NULL);
@@ -80,7 +71,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     mAdapterData = new ArrayList<>();
     mAdapterData = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", getBroadcastName());
 
-    mAdapter = new RecycleViewCustomAdapter(mAdapterData);
+    mAdapter = new RecycleViewTableCustomAdapter(mAdapterData);
     mLayoutManager = new LinearLayoutManager(getContext());
 
     mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);

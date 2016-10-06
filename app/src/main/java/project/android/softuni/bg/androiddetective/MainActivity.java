@@ -24,14 +24,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import project.android.softuni.bg.androiddetective.activity.DetailsActivity;
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.CameraFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.CameraGridFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
-import project.android.softuni.bg.androiddetective.fragment.menu.TableFragment;
 import project.android.softuni.bg.androiddetective.gestures.GestureFilter;
+import project.android.softuni.bg.androiddetective.listener.IOnImageClickListener;
 import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.Constants;
@@ -40,7 +42,7 @@ import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener, GestureFilter.SimpleGestureListener
+public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener, GestureFilter.SimpleGestureListener,IOnImageClickListener
 {
 
   private String[] mNavigationDrawerItemTitles;
@@ -59,6 +61,19 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
     responseObject.save();
     ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
+  }
+
+  @Override
+  public void onClick(AdapterView<?> adapter, int position) {
+    ResponseObject item = (ResponseObject) adapter.getItemAtPosition(position);
+
+    //Create intent
+    Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+    intent.putExtra("title", item.imageName);
+    intent.putExtra("image", item.imagePath + "/" + item.imageName);
+
+    //Start details activity
+    startActivity(intent);
   }
 
   @Override
@@ -200,8 +215,11 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
         fragment = new CallerFragment();
         break;
       case 3:
-        fragment = new CameraFragment();
+        //fragment = new CameraFragment();
+        fragment = new CameraGridFragment();
         break;
+      case 4:
+        fragment = new CameraGridFragment();
 
       default:
         break;

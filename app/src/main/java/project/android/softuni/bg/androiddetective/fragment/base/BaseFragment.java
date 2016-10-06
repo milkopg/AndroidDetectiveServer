@@ -39,7 +39,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
   private static final String TAG = CallerFragment.class.getSimpleName();
   private List<ResponseObject> mAdapterData;
   private String mBroadcastName;
-  private RecycleViewTableCustomAdapter mAdapter;
+  private RecyclerView.Adapter mAdapter;
   private RecyclerView.LayoutManager mLayoutManager;
   private RecyclerView mRecyclerView;
   private EditText editTextFromDate;
@@ -74,7 +74,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     mAdapter = new RecycleViewTableCustomAdapter(mAdapterData);
     mLayoutManager = new LinearLayoutManager(getContext());
 
-    mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+    mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerViewTableData);
     mRecyclerView.setLayoutManager(mLayoutManager);
     mRecyclerView.setAdapter(mAdapter);
     mRecyclerView.setHasFixedSize(false);
@@ -216,7 +216,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     this.mBroadcastName = broadcastName;
   }
 
-  public String getBroadcastName() {
+  protected String getBroadcastName() {
     return mBroadcastName;
   }
+
+//  protected void setAdapter(RecyclerView.Adapter adapter) {
+//    this.mAdapter = adapter;
+//  }
 }

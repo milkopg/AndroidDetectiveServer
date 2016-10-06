@@ -30,7 +30,7 @@
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewTableData"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="75dp"

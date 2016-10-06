@@ -28,9 +28,9 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
  * Created by Milko on 22.9.2016 г..
  */
 
-public class SendDataTask extends AsyncTask <URL, String, String>{
-   private String data;
-   private ConcurrentHashMap<String, ResponseObject> dataMap;
+public class SendDataTask extends AsyncTask <String, String, String>{
+  private static final String TAG = SendDataTask.class.getSimpleName();
+  private String data;
    private HttpURLConnection conn;
    private String requestId;
    private StringBuffer response;
@@ -39,18 +39,13 @@ public class SendDataTask extends AsyncTask <URL, String, String>{
     this.data = data;
   }
 
-  public SendDataTask(ConcurrentHashMap<String, ResponseObject> dataMap) {
-    this.dataMap = dataMap;
-  }
-
   @Override
-  protected String doInBackground(URL... voids) {
+  protected String doInBackground(String... voids) {
 
     String rawData = data;
-    String encodedData = null;
+    
     try {
-      encodedData = URLEncoder.encode( rawData , "UTF-8");
-      URL u = null;
+      URL u ;
       u = new URL(Constants.WEB_API_URL);
       conn = (HttpURLConnection) u.openConnection();
       conn.setRequestMethod( Constants.HTTP_REQUEST_METHOD_POST );
@@ -89,17 +84,13 @@ public class SendDataTask extends AsyncTask <URL, String, String>{
 
       Response staff = gson.fromJson(response.toString(), Response.class);
 
-
-
       Log.i("INFO2", response.toString());
-
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      Log.e(TAG, "doInBackground MalformedURLException: " + e);
     } catch (ProtocolException e) {
-      e.printStackTrace();
+      Log.e(TAG, "doInBackground ProtocolException: " + e);
     } catch (IOException e) {
-      Log.e("SendDataTask", e.getLocalizedMessage());
-      e.printStackTrace();
+      Log.e(TAG, "SendDataTask IOException" + e);
     }
 
    return response.toString();

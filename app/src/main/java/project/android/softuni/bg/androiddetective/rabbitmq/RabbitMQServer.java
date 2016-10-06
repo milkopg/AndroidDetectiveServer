@@ -2,6 +2,7 @@ package project.android.softuni.bg.androiddetective.rabbitmq;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -10,10 +11,13 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import project.android.softuni.bg.androiddetective.util.BitmapUtil;
 import project.android.softuni.bg.androiddetective.util.Constants;
@@ -21,7 +25,6 @@ import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.NotificationManagerLocal;
 import project.android.softuni.bg.androiddetective.webapi.model.Counters;
-import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
@@ -31,7 +34,6 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 public class RabbitMQServer {
   private static final String RPC_QUEUE_NAME = Constants.RABBIT_MQ_REQUES_QUEUE_NAME;
   private static final String TAG = RabbitMQServer.class.getSimpleName();
-  private static final String RABBIT_MQ_URI = Constants.RABBIT_MQ_URI;
   private static RabbitMQServer instance;
   private static Context mContext;
 
@@ -39,11 +41,11 @@ public class RabbitMQServer {
     this.mContext = context;
   }
 
-  public Object receiveMessage() {
-    String message = null;
+  public void receiveMessage() {
     Channel channel;
     Connection connection = null;
     ConnectionFactory factory = new ConnectionFactory();
+    byte[] responseArray;
     try {
       factory.setAutomaticRecoveryEnabled(true);
       factory.setUri(Constants.RABBIT_MQ_URI);
@@ -52,7 +54,6 @@ public class RabbitMQServer {
       channel = connection.createChannel();
 
       channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
-
       channel.basicQos(1);
 
       QueueingConsumer consumer = new QueueingConsumer(channel);
@@ -65,45 +66,20 @@ public class RabbitMQServer {
         String response = null;
 
         QueueingConsumer.Delivery delivery = consumer.nextDelivery();
+        responseArray = delivery.getBody();
 
         BasicProperties props = delivery.getProperties();
         BasicProperties replyProps = new BasicProperties
                 .Builder()
+                .contentType(props.getContentType())
                 .correlationId(props.getCorrelationId())
                 .build();
 
         try {
-          if (isJsonMessage(delivery.getBody())) {
-            message = new String(delivery.getBody(), "UTF-8");
-            Log.d(TAG, "Received message: " + message);
-            response = message;
-
-            ResponseObject responseObject = GsonManager.convertGsonStringToObject(response.toString());
-            if ((responseObject != null) && (responseObject.uuid != null)) {
-              ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
-              responseObject.save();
-              ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
-              responseObject.save();
-              NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
-
-            }
-
+          if (isJsonMessage(props.getContentType())) {
+            processRegularResponse(responseArray);
           } else {
-
-
-            Bitmap bitmap = BitmapUtil.getImage(delivery.getBody());
-            List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
-            long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter()  : 1;
-            Counters count = Counters.findById(Counters.class, counter);
-            count.setCounter(counter + 1);
-            count.save();
-            String imageName = "image_" + counter;
-            String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
-            ResponseObject responseObject = new ResponseObject(UUID.randomUUID().toString(), Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", "", 0, imageName, imagePath );
-            responseObject.save();
-            NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
-
-            //delivery.getBody();
+            processImageResponse(responseArray, replyProps.getCorrelationId());
           }
 
         } catch (Exception e) {
@@ -111,12 +87,11 @@ public class RabbitMQServer {
           response = "";
         } finally {
           try {
-            channel.basicPublish("", props.getReplyTo(), replyProps, (isJsonMessage(delivery.getBody()) ? response.getBytes("UTF-8") : delivery.getBody()));
+            channel.basicPublish("", props.getReplyTo(), replyProps, (isJsonMessage(replyProps.getContentType()) ? response.getBytes("UTF-8") : delivery.getBody()));
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
           } catch (IOException e) {
             Log.e(TAG, "receiveMessage: cannot basic publish or basicAck - " + e);
           }
-
         }
       }
     } catch (Exception e) {
@@ -130,11 +105,58 @@ public class RabbitMQServer {
         }
       }
     }
-    return message;
   }
 
-  private boolean isJsonMessage (byte[] message) {
-    return (message != null && message.length < 50000);
+  private void processRegularResponse(byte[] response) {
+    String message = null;
+    try {
+      message = new String(response, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    Log.d(TAG, "Received message: " + message);
+    ResponseObject responseObject = GsonManager.convertGsonStringToObject(message.toString());
+    persistObjectAndShowNotification(responseObject);
+  }
+
+  private void processImageResponse(byte[] response, String correlationId) {
+    String inputLine;
+    StringBuilder builder = new StringBuilder();
+
+    BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(response)));
+    try {
+      while ((inputLine = in.readLine()) != null) {
+        builder.append(inputLine);
+      }
+    } catch (IOException e) {
+      Log.e(TAG, "processImageResponse: " + e);
+    }
+
+    byte[] deserializedByteArray = Base64.decode(builder.toString(), Base64.NO_WRAP);
+    Bitmap bitmap = BitmapUtil.getImage(deserializedByteArray);
+    List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
+    long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() : 1;
+    Counters count = Counters.findById(Counters.class, counter);
+    if (count == null)
+      count = new Counters(Constants.RECEIVER_CAMERA, counter + 1);
+    count.save();
+    String imageName = Constants.RABBIT_MQ_IMAGES_PREFIX + counter + ".jpg";
+    if (bitmap == null) return;
+
+    String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
+    ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", "", 0, imageName, imagePath);
+    persistObjectAndShowNotification(responseObject);
+  }
+
+  private void persistObjectAndShowNotification(ResponseObject responseObject) {
+    if ((responseObject != null) && (responseObject.uuid != null)) {
+      responseObject.save();
+      NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
+    }
+  }
+
+  private boolean isJsonMessage(String contentType) {
+    return (contentType != null && !contentType.equals(Constants.RABBIT_MQ_CONTENT_TYPE));
   }
 
   public static RabbitMQServer getInstance(Context context) {

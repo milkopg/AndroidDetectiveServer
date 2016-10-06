@@ -31,7 +31,7 @@ public class BitmapUtil {
   public static String saveToInternalStorage(Context context, Bitmap bitmapImage, String fileName){
     ContextWrapper cw = new ContextWrapper(context);
     // path to /data/data/yourapp/app_data/imageDir
-    File directory = cw.getDir("images", Context.MODE_PRIVATE);
+    File directory = cw.getDir(Constants.RABBIT_MQ_IMAGES_FOLDER, Context.MODE_PRIVATE);
     // Create imageDir
     File mypath=new File(directory, fileName);
 
@@ -41,12 +41,12 @@ public class BitmapUtil {
       // Use the compress method on the BitMap object to write image to the OutputStream
       bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.e(TAG, "saveToInternalStorage Cannot open FileOutputStream: " + e);
     } finally {
       try {
         fos.close();
       } catch (IOException e) {
-        Log.e(TAG, "saveToInternalStorage: " + e);
+        Log.e(TAG, "saveToInternalStorage Cannot close FileOutputStream: " + e);
       }
     }
     return directory.getAbsolutePath();

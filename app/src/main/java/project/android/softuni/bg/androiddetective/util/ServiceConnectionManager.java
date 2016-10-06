@@ -23,7 +23,7 @@ public class ServiceConnectionManager {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
           DetectiveServerService.DetectiveServerServiceBinder serviceToOperate = (DetectiveServerService.DetectiveServerServiceBinder) service;
-          serviceToOperate.getService().setServiceCallback(callback);
+          //serviceToOperate.getService().setServiceCallback(callback);
         }
 
         @Override

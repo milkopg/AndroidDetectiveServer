@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   public void receiveJsonData(String data) {
     ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
     responseObject.save();
-    ResponseBase.getDataMap().put(responseObject.uuid, responseObject);
+    ResponseBase.getDataMap().put(responseObject.getUuid(), responseObject);
   }
 
   @Override

@@ -25,12 +25,12 @@ public class NotificationManagerLocal {
   public void showNotification(ResponseObject responseObject) {
     if (responseObject == null) return;;
     final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
-    mBuilder.setContentTitle("Android detective: " + responseObject.broadcastName);
-    mBuilder.setContentText(responseObject.sendTo + ": " + responseObject.sendText);
+    mBuilder.setContentTitle("Android detective: " + responseObject.getBroadcastName());
+    mBuilder.setContentText(responseObject.getSendTo() + ": " + responseObject.getSendText());
     mBuilder.setSmallIcon(R.mipmap.ic_launcher);
     mBuilder.setAutoCancel(true);
     Intent notificationIntent = new Intent(mContext, MainActivity.class);
-    notificationIntent.putExtra(Constants.BROADCAST_NAME, responseObject.broadcastName);
+    notificationIntent.putExtra(Constants.BROADCAST_NAME, responseObject.getBroadcastName());
 
     TaskStackBuilder tsb = TaskStackBuilder.create(mContext);
     tsb.addParentStack(MainActivity.class);

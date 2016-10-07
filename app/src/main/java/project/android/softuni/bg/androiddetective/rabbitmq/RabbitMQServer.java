@@ -151,7 +151,7 @@ public class RabbitMQServer {
   }
 
   private void persistObjectAndShowNotification(ResponseObject responseObject) {
-    if ((responseObject != null) && (responseObject.uuid != null)) {
+    if ((responseObject != null) && (responseObject.getUuid() != null)) {
       responseObject.save();
       NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
     }

@@ -15,22 +15,22 @@ import java.util.Date;
 public class ResponseObject extends SugarRecord implements Parcelable {
   private static final String TAG = ResponseObject.class.getSimpleName();
   @SerializedName("uuid")
-  public String uuid;
+  private String uuid;
 
   @SerializedName("broacast_name")
-  public String broadcastName;
+  private String broadcastName;
 
   @SerializedName("date")
-  public Date date;
+  private Date date;
 
   @SerializedName("send_to")
-  public String sendTo;
+  private String sendTo;
 
   @SerializedName("send_text")
-  public String sendText;
+  private String sendText;
 
   @SerializedName("direction")
-  public int direction;
+  private int direction;
 
   @SerializedName("image_name")
   public String imageName;
@@ -48,6 +48,70 @@ public class ResponseObject extends SugarRecord implements Parcelable {
     this.sendText = sendText;
     this.direction = direction;
     this.imageName = imageName;
+    this.imagePath = imagePath;
+  }
+
+  public String getUuid() {
+    return uuid;
+  }
+
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
+  }
+
+  public String getBroadcastName() {
+    return broadcastName;
+  }
+
+  public void setBroadcastName(String broadcastName) {
+    this.broadcastName = broadcastName;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
+  public String getSendTo() {
+    return sendTo;
+  }
+
+  public void setSendTo(String sendTo) {
+    this.sendTo = sendTo;
+  }
+
+  public String getSendText() {
+    return sendText;
+  }
+
+  public void setSendText(String sendText) {
+    this.sendText = sendText;
+  }
+
+  public int getDirection() {
+    return direction;
+  }
+
+  public void setDirection(int direction) {
+    this.direction = direction;
+  }
+
+  public String getImageName() {
+    return imageName;
+  }
+
+  public void setImageName(String imageName) {
+    this.imageName = imageName;
+  }
+
+  public String getImagePath() {
+    return imagePath;
+  }
+
+  public void setImagePath(String imagePath) {
     this.imagePath = imagePath;
   }
 

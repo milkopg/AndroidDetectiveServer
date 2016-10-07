@@ -54,7 +54,7 @@ public class RecycleViewImageCustomAdapter extends  RecyclerView.Adapter<Recycle
 
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inSampleSize = 2;
-    Bitmap bm = BitmapFactory.decodeFile(mAdapterData.get(position).imagePath + "/" + mAdapterData.get(position).imageName, options);
+    Bitmap bm = BitmapFactory.decodeFile(mAdapterData.get(position).getImagePath() + "/" + mAdapterData.get(position).imageName, options);
     holder.imageViewCameraPicture.setImageBitmap(bm);
 
     holder.textViewCameraPictureInfo.setText(mAdapterData.get(position).imageName);

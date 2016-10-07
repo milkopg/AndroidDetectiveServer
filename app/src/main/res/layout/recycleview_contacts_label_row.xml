@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:weightSum="6"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:text="@string/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewContactName"
+        android:layout_weight="1.95"/>
+
+    <TextView
+        android:text="@string/phone_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewContactPhoneNumber"
+        android:layout_weight="1.75"/>
+
+    <TextView
+        android:text="@string/email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewContactEmail"
+        android:layout_weight="3.3"/>
+
+</LinearLayout>

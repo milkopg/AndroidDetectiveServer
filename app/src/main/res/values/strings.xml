@@ -14,6 +14,7 @@
         <item>Read sms</item>
         <item>Calls</item>
         <item>Camera pictures</item>
+        <item>Contacts</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -31,4 +32,8 @@
     <string name="swipe_down">Swipe down</string>
     <string name="swipe_up">SWIPE_UP</string>
     <string name="camera_pictures">Camera pictures</string>
+    <string name="name">Name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="email">Email</string>
+    <string name="contacts">Contacts</string>
 </resources>

@@ -30,6 +30,7 @@ import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.CameraFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.CameraGridFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.ContactsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.gestures.GestureFilter;
@@ -69,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
     //Create intent
     Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-    intent.putExtra("title", item.imageName);
-    intent.putExtra("image", item.imagePath + "/" + item.imageName);
+    intent.putExtra("title", item.getImageName());
+    intent.putExtra("image", item.getImagePath() + "/" + item.getImageName());
 
     //Start details activity
     startActivity(intent);
@@ -219,7 +220,8 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
         fragment = new CameraGridFragment();
         break;
       case 4:
-        fragment = new CameraGridFragment();
+        fragment = new ContactsFragment();
+        break;
 
       default:
         break;
@@ -270,12 +272,13 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   }
 
   private DataModel[] setupDrawerItems() {
-    DataModel[] drawerItem = new DataModel[4];
+    DataModel[] drawerItem = new DataModel[5];
 
     drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings), getString(R.string.menu_settings));
     drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms), Constants.RECEIVER_SMS_RECEIVED);
     drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info), Constants.RECEIVER_CALL);
     drawerItem[3] = new DataModel(R.mipmap.camera, getString(R.string.camera_pictures), Constants.RECEIVER_CAMERA);
+    drawerItem[4] = new DataModel(R.mipmap.contact, getString(R.string.contacts), Constants.RECEIVER_CONTACTS);
     return drawerItem;
   }
 

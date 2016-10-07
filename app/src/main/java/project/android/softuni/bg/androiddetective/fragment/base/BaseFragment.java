@@ -172,46 +172,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
   }
 
-//  private String saveToInternalStorage(Bitmap bitmapImage){
-//    ContextWrapper cw = new ContextWrapper(getContext());
-//    // path to /data/data/yourapp/app_data/imageDir
-//    File directory = cw.getDir("images", Context.MODE_PRIVATE);
-//    // Create imageDir
-//    File mypath=new File(directory,"profile.jpg");
-//
-//    FileOutputStream fos = null;
-//    try {
-//      fos = new FileOutputStream(mypath);
-//      // Use the compress method on the BitMap object to write image to the OutputStream
-//      bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    } finally {
-//      try {
-//        fos.close();
-//      } catch (IOException e) {
-//        Log.e(TAG, "saveToInternalStorage: cannot close FileOutputStream" + e);
-//        e.printStackTrace();
-//      }
-//    }
-//    return directory.getAbsolutePath();
-//  }
-//
-//  private void loadImageFromStorage(String path) {
-//
-//    try {
-//      File f=new File(path, "profile.jpg");
-//      Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-//      ImageView img=(ImageView)findViewById(R.id.imgPicker);
-//      img.setImageBitmap(b);
-//    }
-//    catch (FileNotFoundException e) {
-//      Log.e(TAG, "loadImageFromStorage: FileNotFoundException" + e);
-//    }
-//
-//  }
-
-
   protected void setBroadcastName(String broadcastName) {
     this.mBroadcastName = broadcastName;
   }

@@ -11,6 +11,7 @@ public class Constants {
   //public static final String RABBIT_MQ_URI = "amqp://rzqmutrv:1kFbX3tXuCWzpRPy86neVmQhuscZ31Yg@hare.rmq.cloudamqp.com/rzqmutrv";
   public static final String RABBIT_MQ_REQUES_QUEUE_NAME = "rpc_queue";
   public static final String RABBIT_MQ_IMAGES_PREFIX = "image_";
+  public static final String RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX = "image_thumbsnail_";
   public static final String RABBIT_MQ_IMAGES_FOLDER = "images";
 
   public static final String HTTP_HEADER_CONTENT_TYPE = "Content-type";
@@ -31,6 +32,7 @@ public class Constants {
   public static final String RECEIVER_SMS_SENT = "SmsDeliverBroadcastReceiver";
   public static final String RECEIVER_SMS_RECEIVED = "SmsReceivedBroadcastReceiver";
   public static final String RECEIVER_CAMERA = "CameraReceiver";
+  public static final String RECEIVER_CONTACTS = "ContactObserver";
 
   public static final String BROADCAST_NAME = "BROADCAST_NAME";
   public static final String DATABASE_NAME = "android_detective_server.db";

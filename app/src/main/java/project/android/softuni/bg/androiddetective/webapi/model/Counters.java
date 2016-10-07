@@ -35,6 +35,4 @@ public class Counters extends SugarRecord{
     this.receiverName = receiverName;
     this.counter = counter;
   }
-
-
 }

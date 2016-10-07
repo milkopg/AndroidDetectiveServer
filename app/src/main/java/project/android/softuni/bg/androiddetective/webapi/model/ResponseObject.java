@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Milko on 23.9.2016 г..
@@ -36,7 +37,10 @@ public class ResponseObject extends SugarRecord implements Parcelable {
   public String imageName;
 
   @SerializedName("image_path")
-  public String imagePath;
+  private String imagePath;
+
+  @SerializedName("contacts")
+  private List<Contact> contacts;
 
   public ResponseObject() {}
 
@@ -49,6 +53,18 @@ public class ResponseObject extends SugarRecord implements Parcelable {
     this.direction = direction;
     this.imageName = imageName;
     this.imagePath = imagePath;
+  }
+
+  public ResponseObject(String uuid, String broadcastName, Date date, String sendTo, String sendText, int direction, String imageName, String imagePath, List<Contact> contacts) {
+    this.uuid = uuid;
+    this.broadcastName = broadcastName;
+    this.date = date;
+    this.sendTo = sendTo;
+    this.sendText = sendText;
+    this.direction = direction;
+    this.imageName = imageName;
+    this.imagePath = imagePath;
+    this.contacts = contacts;
   }
 
   public String getUuid() {
@@ -154,4 +170,12 @@ public class ResponseObject extends SugarRecord implements Parcelable {
       return new ResponseObject[size];
     }
   };
+
+  public List<Contact> getContacts() {
+    return contacts;
+  }
+
+  public void setContacts(List<Contact> contacts) {
+    this.contacts = contacts;
+  }
 }

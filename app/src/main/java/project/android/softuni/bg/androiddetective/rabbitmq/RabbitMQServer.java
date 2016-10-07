@@ -2,6 +2,7 @@ package project.android.softuni.bg.androiddetective.rabbitmq;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
@@ -24,6 +25,7 @@ import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.NotificationManagerLocal;
+import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 import project.android.softuni.bg.androiddetective.webapi.model.Counters;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
@@ -46,6 +48,7 @@ public class RabbitMQServer {
     Connection connection = null;
     ConnectionFactory factory = new ConnectionFactory();
     byte[] responseArray;
+    int retry = 0;
     try {
       factory.setAutomaticRecoveryEnabled(true);
       factory.setUri(Constants.RABBIT_MQ_URI);
@@ -96,6 +99,16 @@ public class RabbitMQServer {
       }
     } catch (Exception e) {
       Log.e(TAG, "Cannot open RabbitMQ Connection: " + e);
+      if (retry < 5) {
+        retry++;
+        try {
+          Thread.sleep(5000);
+        } catch (InterruptedException e1) {
+          Log.e(TAG, "Thread cannot sleep " + e1);
+        }
+        receiveMessage();
+      }
+
     } finally {
       if (connection != null) {
         try {
@@ -121,6 +134,33 @@ public class RabbitMQServer {
   }
 
   private void processImageResponse(byte[] response, String correlationId) {
+    String deserializedString = deserializeByArrayToString(response);
+    byte[] deserializedByteArray = Base64.decode(deserializedString, Base64.NO_WRAP);
+
+    Bitmap bitmap = BitmapUtil.getImage(deserializedByteArray);
+    List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
+    long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() + 1 : 1;
+    Counters count = Counters.findById(Counters.class, counter);
+    if (count == null)
+      count = new Counters(Constants.RECEIVER_CAMERA, counter );
+    count.save();
+
+    String imageName = Constants.RABBIT_MQ_IMAGES_PREFIX + counter + ".jpg";
+    String imageNameThumbnails = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + counter + ".jpg";
+    if (bitmap == null) return;
+
+    String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
+
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inSampleSize = 2;
+    Bitmap bm = BitmapFactory.decodeFile(imageNameThumbnails, options);
+    BitmapUtil.saveToInternalStorage(mContext, bm, imageNameThumbnails);
+
+    ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", "", 0, imageName, imagePath);
+    persistObjectAndShowNotification(responseObject);
+  }
+
+  private String deserializeByArrayToString(byte [] response) {
     String inputLine;
     StringBuilder builder = new StringBuilder();
 
@@ -133,25 +173,19 @@ public class RabbitMQServer {
       Log.e(TAG, "processImageResponse: " + e);
     }
 
-    byte[] deserializedByteArray = Base64.decode(builder.toString(), Base64.NO_WRAP);
-    Bitmap bitmap = BitmapUtil.getImage(deserializedByteArray);
-    List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
-    long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() + 1 : 1;
-    Counters count = Counters.findById(Counters.class, counter);
-    if (count == null)
-      count = new Counters(Constants.RECEIVER_CAMERA, counter );
-
-    count.save();
-    String imageName = Constants.RABBIT_MQ_IMAGES_PREFIX + counter + ".jpg";
-    if (bitmap == null) return;
-
-    String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
-    ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", "", 0, imageName, imagePath);
-    persistObjectAndShowNotification(responseObject);
+    return builder.toString();
   }
 
   private void persistObjectAndShowNotification(ResponseObject responseObject) {
     if ((responseObject != null) && (responseObject.getUuid() != null)) {
+      Contact.deleteAll(Contact.class);
+      List<Contact> contacts = responseObject.getContacts();
+      if (contacts != null && contacts.size() > 0) {
+        Contact.deleteAll(Contact.class);
+        for (Contact contact : contacts) {
+          contact.save();
+        }
+      }
       responseObject.save();
       NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
     }

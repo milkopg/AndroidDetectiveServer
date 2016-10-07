@@ -50,7 +50,7 @@ public class CameraGridViewAdapter extends ArrayAdapter<ResponseObject> {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
-        Bitmap bm = BitmapFactory.decodeFile(mAdapterData.get(position).imagePath + "/" + mAdapterData.get(position).imageName, options);
+        Bitmap bm = BitmapFactory.decodeFile(mAdapterData.get(position).getImagePath() + "/" + mAdapterData.get(position).getImageName(), options);
 
         holder.image.setImageBitmap(bm);
         holder.imageTitle.setText(item.imageName);

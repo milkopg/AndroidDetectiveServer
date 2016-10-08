@@ -9,7 +9,7 @@ import com.orm.SugarRecord;
 
 public class Contact extends SugarRecord{
   @SerializedName("contactId")
-  private String contactId;
+  private int contactId;
 
   @SerializedName("name")
   private String name;
@@ -26,7 +26,7 @@ public class Contact extends SugarRecord{
   public Contact() {
   }
 
-  public Contact(String email, String contactId, String name, String phoneNumber, ResponseObject response) {
+  public Contact(String email, int contactId, String name, String phoneNumber, ResponseObject response) {
     this.email = email;
     this.contactId = contactId;
     this.name = name;
@@ -34,11 +34,11 @@ public class Contact extends SugarRecord{
     this.response = response;
   }
 
-  public String getContactId() {
+  public int getContactId() {
     return contactId;
   }
 
-  public void setContactId(String contactId) {
+  public void setContactId(int contactId) {
     this.contactId = contactId;
   }
 

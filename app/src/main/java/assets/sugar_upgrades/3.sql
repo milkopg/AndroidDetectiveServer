@@ -1,2 +1,1 @@
-alter table RESPONSE_OBJECT add IMAGE_NAME TEXT;
 alter table RESPONSE_OBJECT add IMAGE_PATH TEXT;

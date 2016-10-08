@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
+import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 public class CameraGridViewAdapter extends ArrayAdapter<ResponseObject> {
@@ -50,8 +51,8 @@ public class CameraGridViewAdapter extends ArrayAdapter<ResponseObject> {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
-        Bitmap bm = BitmapFactory.decodeFile(mAdapterData.get(position).getImagePath() + "/" + mAdapterData.get(position).getImageName(), options);
 
+        Bitmap bm = BitmapFactory.decodeFile(mAdapterData.get(position).getImagePath() + "/" + mAdapterData.get(position).getSendText(), options);
         holder.image.setImageBitmap(bm);
         holder.imageTitle.setText(item.imageName);
 

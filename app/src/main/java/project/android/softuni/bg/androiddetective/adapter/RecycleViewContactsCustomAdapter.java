@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
+import project.android.softuni.bg.androiddetective.listener.IOnContactSortClickListener;
 import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 
@@ -16,14 +17,15 @@ import project.android.softuni.bg.androiddetective.webapi.model.Contact;
  * Created by Milko on 30.9.2016 г..
  */
 
-public class RecycleViewContactsCustomAdapter extends RecyclerView.Adapter<RecycleViewContactsCustomAdapter.ViewHolder>{
-  List<Contact> mAdapterData;
+public class RecycleViewContactsCustomAdapter extends RecyclerView.Adapter<RecycleViewContactsCustomAdapter.ViewHolder> {
+  private List<Contact> mAdapterData;
 
   public RecycleViewContactsCustomAdapter(List<Contact> mAdapterData) {
     this.mAdapterData = mAdapterData;
   }
 
-  public static class ViewHolder extends  RecyclerView.ViewHolder {
+
+  public static class ViewHolder extends  RecyclerView.ViewHolder{
     private TextView mTextViewContactName;
     private TextView mTextViewPhoneNumber;
     private TextView mTextViewEmail;

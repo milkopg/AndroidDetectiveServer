@@ -24,11 +24,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import project.android.softuni.bg.androiddetective.activity.DetailsActivity;
+import project.android.softuni.bg.androiddetective.activity.CameraDetailsActivity;
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
-import project.android.softuni.bg.androiddetective.fragment.menu.CameraFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.CameraGridFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ContactsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
@@ -40,7 +39,6 @@ import project.android.softuni.bg.androiddetective.service.DetectiveServerServic
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
-import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener, GestureFilter.SimpleGestureListener,IOnImageClickListener
@@ -61,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   public void receiveJsonData(String data) {
     ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
     responseObject.save();
-    ResponseBase.getDataMap().put(responseObject.getUuid(), responseObject);
   }
 
   @Override
@@ -69,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     ResponseObject item = (ResponseObject) adapter.getItemAtPosition(position);
 
     //Create intent
-    Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+    Intent intent = new Intent(MainActivity.this, CameraDetailsActivity.class);
     intent.putExtra("title", item.getImageName());
     intent.putExtra("image", item.getImagePath() + "/" + item.getImageName());
 
@@ -135,34 +132,40 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-    this.detector.onTouchEvent(motionEvent);
+    //this.detector.onTouchEvent(motionEvent);
     return super.dispatchTouchEvent(motionEvent);
   }
 
+//  @Override
+//  public void onSwipe(int direction) {
+//    String text = "";
+//    int position = 0;
+//
+//    switch (direction) {
+//      case GestureFilter.SWIPE_RIGHT :
+//        text = getString(R.string.swipe_right);
+//        break;
+//      case GestureFilter.SWIPE_LEFT :
+//        text = getString(R.string.swipe_left);
+//        break;
+//      case GestureFilter.SWIPE_DOWN :
+//        text = getString(R.string.swipe_down);
+//        position = 1;
+//        //replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//        break;
+//      case GestureFilter.SWIPE_UP :
+//        text = getString(R.string.swipe_up);
+//        position = 2;
+//       // replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//        break;
+//    }
+//    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+//  }
+
+
   @Override
   public void onSwipe(int direction) {
-    String text = "";
-    int position = 0;
 
-    switch (direction) {
-      case GestureFilter.SWIPE_RIGHT :
-        text = getString(R.string.swipe_right);
-        break;
-      case GestureFilter.SWIPE_LEFT :
-        text = getString(R.string.swipe_left);
-        break;
-      case GestureFilter.SWIPE_DOWN :
-        text = getString(R.string.swipe_down);
-        position = 1;
-        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-        break;
-      case GestureFilter.SWIPE_UP :
-        text = getString(R.string.swipe_up);
-        position = 2;
-        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-        break;
-    }
-    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
   }
 
   @Override

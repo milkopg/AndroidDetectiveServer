@@ -7,6 +7,7 @@
 
     <TextView
         android:text="@string/name"
+        android:clickable="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewContactName"
@@ -14,6 +15,7 @@
 
     <TextView
         android:text="@string/phone_number"
+        android:clickable="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewContactPhoneNumber"
@@ -21,6 +23,7 @@
 
     <TextView
         android:text="@string/email"
+        android:clickable="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/textViewContactEmail"

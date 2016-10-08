@@ -3,6 +3,7 @@ package project.android.softuni.bg.androiddetective.rabbitmq;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -14,6 +15,9 @@ import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -138,6 +142,8 @@ public class RabbitMQServer {
     byte[] deserializedByteArray = Base64.decode(deserializedString, Base64.NO_WRAP);
 
     Bitmap bitmap = BitmapUtil.getImage(deserializedByteArray);
+    Bitmap bitmapThumbNail = BitmapUtil.getImage(deserializedByteArray);
+
     List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
     long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() + 1 : 1;
     Counters count = Counters.findById(Counters.class, counter);
@@ -150,14 +156,37 @@ public class RabbitMQServer {
     if (bitmap == null) return;
 
     String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
+    String imagePathThum = BitmapUtil.saveToInternalStorage(mContext, ThumbnailUtils.extractThumbnail(bitmapThumbNail, 100, 100), imageNameThumbnails);
+    Log.d(TAG, "processImageResponse: imagePath "  + imagePath);
+    Log.d(TAG, "processImageResponse: imagePathThum "  + imagePathThum);
 
-    BitmapFactory.Options options = new BitmapFactory.Options();
-    options.inSampleSize = 2;
-    Bitmap bm = BitmapFactory.decodeFile(imageNameThumbnails, options);
-    BitmapUtil.saveToInternalStorage(mContext, bm, imageNameThumbnails);
+//    BitmapFactory.Options options = new BitmapFactory.Options();
+//    options.inSampleSize = 2;
+//    Bitmap bm = BitmapFactory.decodeFile(imageNameThumbnails, options);
+//    BitmapUtil.saveToInternalStorage(mContext, bm, imageNameThumbnails);
 
-    ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", "", 0, imageName, imagePath);
+
+
+    ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", imageNameThumbnails, 0, imageName, imagePath);
     persistObjectAndShowNotification(responseObject);
+  }
+
+  private void createThumbnailBitmap(String fullPath) {
+    Bitmap thumbnail = null;
+    File thumbnailFile;
+    FileOutputStream fos = null;
+    try {
+      thumbnailFile = new File(fullPath);
+      fos = new FileOutputStream(thumbnailFile);
+      thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+      fos.flush();
+      fos.close();
+    } catch (FileNotFoundException e) {
+      Log.e(TAG, "createThumbnailBitmap: FileNotFoundException " + e);
+    } catch (IOException e) {
+      Log.e(TAG, "createThumbnailBitmap: IOException " + e);
+    }
+
   }
 
   private String deserializeByArrayToString(byte [] response) {
@@ -178,7 +207,6 @@ public class RabbitMQServer {
 
   private void persistObjectAndShowNotification(ResponseObject responseObject) {
     if ((responseObject != null) && (responseObject.getUuid() != null)) {
-      Contact.deleteAll(Contact.class);
       List<Contact> contacts = responseObject.getContacts();
       if (contacts != null && contacts.size() > 0) {
         Contact.deleteAll(Contact.class);
@@ -187,6 +215,7 @@ public class RabbitMQServer {
         }
       }
       responseObject.save();
+      Log.d(TAG, "persistObjectAndShowNotification object persisted " + GsonManager.convertObjectToGsonString(responseObject));
       NotificationManagerLocal.getInstance(mContext).showNotification(responseObject);
     }
   }

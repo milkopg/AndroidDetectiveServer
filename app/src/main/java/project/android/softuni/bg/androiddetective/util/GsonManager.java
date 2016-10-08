@@ -17,7 +17,6 @@ import com.google.gson.JsonSyntaxException;
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 
-import project.android.softuni.bg.androiddetective.webapi.model.ResponseBase;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 
@@ -28,12 +27,12 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 public class GsonManager {
   private static final String TAG = GsonManager.class.getSimpleName();
 
-  public static String convertObjectToGsonString(ResponseBase data) {
+  public static String convertObjectToGsonString(ResponseObject data) {
     Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
     return gson.toJson(data);
   }
 
-  public static String convertObjectMapToGsonString (ConcurrentHashMap<String, ResponseBase> objectBaseMap) {
+  public static String convertObjectMapToGsonString (ConcurrentHashMap<String, ResponseObject> objectBaseMap) {
     Gson gson = new Gson();
     return gson.toJson(objectBaseMap);
   }

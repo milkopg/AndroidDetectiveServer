@@ -145,10 +145,14 @@ public class RabbitMQServer {
     Bitmap bitmapThumbNail = BitmapUtil.getImage(deserializedByteArray);
 
     List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
-    long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() + 1 : 1;
+    long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() : 1;
     Counters count = Counters.findById(Counters.class, counter);
-    if (count == null)
+    if (count == null) {
       count = new Counters(Constants.RECEIVER_CAMERA, counter );
+    } else {
+      counter++;
+      count.setCounter(counter);
+    }
     count.save();
 
     String imageName = Constants.RABBIT_MQ_IMAGES_PREFIX + counter + ".jpg";

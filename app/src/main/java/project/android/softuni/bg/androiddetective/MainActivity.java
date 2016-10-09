@@ -22,9 +22,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import project.android.softuni.bg.androiddetective.activity.CameraDetailsActivity;
+import project.android.softuni.bg.androiddetective.activity.CameraGridDetailsActivity;
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
     ResponseObject item = (ResponseObject) adapter.getItemAtPosition(position);
 
     //Create intent
-    Intent intent = new Intent(MainActivity.this, CameraDetailsActivity.class);
+    Intent intent = new Intent(MainActivity.this, CameraGridDetailsActivity.class);
     intent.putExtra("title", item.getImageName());
     intent.putExtra("image", item.getImagePath() + "/" + item.getImageName());
 
@@ -219,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
         fragment = new CallerFragment();
         break;
       case 3:
-        //fragment = new CameraFragment();
         fragment = new CameraGridFragment();
         break;
       case 4:

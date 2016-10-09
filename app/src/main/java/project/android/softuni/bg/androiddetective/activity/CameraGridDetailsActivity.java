@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import project.android.softuni.bg.androiddetective.R;
 
-public class CameraDetailsActivity extends AppCompatActivity {
+public class CameraGridDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -23,7 +23,7 @@ import project.android.softuni.bg.androiddetective.webapi.model.Contact;
  * Created by Milko on 7.10.2016 г..
  */
 
-public class ContactsFragment extends Fragment implements View.OnClickListener{
+public class ContactsFragment extends Fragment implements View.OnClickListener {
   private TextView mTextViewContactName;
   private TextView mTextViewPhoneNumber;
   private TextView mTextViewEmail;
@@ -72,27 +72,9 @@ public class ContactsFragment extends Fragment implements View.OnClickListener{
 
   @Override
   public void onClick(View view) {
-    String columnName = getDatabaseColumnNameByViewId(view.getId());
+    String columnName = QueriesUtil.getDatabaseColumnNameByViewId(view.getId());
     boolean ascending = QueriesUtil.getAscOrDescSorting(columnName);
-    String orderBy = ascending ? "ASC" : "DESC";
-    mAdapterData.clear();
-    mAdapterData.addAll(Contact.find(Contact.class, null, null, null, columnName + " " + orderBy, null));
-    mAdapter.notifyDataSetChanged();
-  }
-
-  private String getDatabaseColumnNameByViewId(int viewId) {
-    String columnName = "";
-    switch (viewId) {
-      case  R.id.textViewContactName :
-        columnName = "NAME";
-        break;
-      case R.id.textViewContactPhoneNumber :
-        columnName = "PHONE_NUMBER";
-        break;
-      case R.id.textViewContactEmail :
-        columnName = "EMAIL";
-        break;
- }
-    return columnName;
+    String orderBy = QueriesUtil.getOrderBy(ascending);
+    QueriesUtil.orderContactData(Contact.class, mAdapter, mAdapterData, columnName, orderBy);
   }
 }

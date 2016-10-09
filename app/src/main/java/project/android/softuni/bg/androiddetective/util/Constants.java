@@ -40,4 +40,15 @@ public class Constants {
 
   public static final String DATE_FORMAT_SHORT_DATE_TIME = "yyyy-MM-dd HH:mm";
   public static final String DATE_FORMAT_SHORT_DATE = "dd-MM-yyyy";
+
+  public static final String ORDER_BY_ASC = "ASC";
+  public static final String ORDER_BY_DESC = "DESC";
+
+  public static final String COLUMN_CONTACT_NAME = "NAME";
+  public static final String COLUMN_CONTACT_PHONE_NUMBER = "PHONE_NUMBER";
+  public static final String COLUMN_CONTACT_EMAIL = "EMAIL";
+  public static final String COLUMN_RESPONSE_OBJECT_DATE = "DATE";
+  public static final String COLUMN_RESPONSE_OBJECT_SEND_TO = "SEND_TO";
+  public static final String COLUMN_RESPONSE_OBJECT_SEND_TEXT = "SEND_TEXT";
+
 }

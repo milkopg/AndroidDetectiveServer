@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.orm.query.Condition;
 import com.orm.query.Select;
@@ -29,6 +30,7 @@ import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.adapter.RecycleViewTableCustomAdapter;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.util.Constants;
+import project.android.softuni.bg.androiddetective.util.QueriesUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
@@ -48,6 +50,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
   private DatePickerDialog toDatePickerDialog;
   private SimpleDateFormat dateFormatter;
 
+  private TextView mTextViewDateLabel;
+  private TextView mTextViewSendToLabel;
+  private TextView mTextViewSendTextLabel;
+
   private Calendar fromCalendar;
   private Calendar toCalendar;
 
@@ -55,6 +61,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
     int layoutId = bundle.getInt(Constants.LAYOUT_ID);
+
     View rootView = inflater.inflate(layoutId, container, false);
 
     editTextFromDate = (EditText) rootView.findViewById(R.id.editTextFromDate);
@@ -64,6 +71,14 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     editTextToDate = (EditText) rootView.findViewById(R.id.editTextToDate);
     editTextToDate.setInputType(InputType.TYPE_NULL);
     editTextToDate.requestFocus();
+
+    mTextViewDateLabel = (TextView) rootView.findViewById(R.id.textViewDateLabel);
+    mTextViewSendToLabel = (TextView) rootView.findViewById(R.id.textViewSendToLabel);
+    mTextViewSendTextLabel = (TextView) rootView.findViewById(R.id.textViewSendTextLabel);
+
+    mTextViewDateLabel.setOnClickListener(this);
+    mTextViewSendTextLabel.setOnClickListener(this);
+    mTextViewSendToLabel.setOnClickListener(this);
 
     dateFormatter = new SimpleDateFormat(Constants.DATE_FORMAT_SHORT_DATE, Locale.US);
     setBroadcastName(bundle.getString(Constants.BROADCAST_NAME));
@@ -122,7 +137,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
       public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         initCalendarValues(fromCalendar, year, monthOfYear, dayOfMonth, 0 , 0, 0);
         editTextFromDate.setText(dateFormatter.format(fromCalendar.getTime()));
-        filterData();
+        QueriesUtil.orderTableData(ResponseObject.class, mAdapter, mAdapterData, mBroadcastName, "DATE", fromCalendar, toCalendar);
       }
 
     }, fromCalendar.get(Calendar.YEAR), fromCalendar.get(Calendar.MONTH), fromCalendar.get(Calendar.DAY_OF_MONTH));
@@ -132,8 +147,8 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     toDatePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
       public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         initCalendarValues(toCalendar, year, monthOfYear, dayOfMonth, 23, 59, 59);
-        filterData();
         editTextToDate.setText(dateFormatter.format(toCalendar.getTime()));
+        QueriesUtil.orderTableData(ResponseObject.class, mAdapter, mAdapterData, mBroadcastName, "DATE", fromCalendar, toCalendar);
       }
 
     }, toCalendar.get(Calendar.YEAR), toCalendar.get(Calendar.MONTH), toCalendar.get(Calendar.DAY_OF_MONTH));
@@ -147,28 +162,25 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
   @Override
   public void onClick(View view) {
-    if (view.getId() == R.id.editTextFromDate) {
-      fromDatePickerDialog.show();
-    } else if (view.getId() == R.id.editTextToDate) {
-      toDatePickerDialog.show();
-    }
-  }
-
-  private void filterData() {
-    if ((fromCalendar) == null || (toCalendar == null)) return;
-    Select<ResponseObject> select = Select.from(ResponseObject.class).where(Condition.prop(Constants.BROADCAST_NAME).like(getBroadcastName()), Condition.prop("DATE").gt(fromCalendar.getTime().getTime()), Condition.prop("DATE").lt(toCalendar.getTime().getTime())).orderBy("DATE DESC");
-
-    if (select != null) {
-      Iterator<ResponseObject> iterator = select.iterator();
-      if (iterator != null && iterator.hasNext())
-        mAdapterData.clear();
-
-      while (iterator.hasNext()) {
-        mAdapterData.add(iterator.next());
-        if (!iterator.hasNext()) {
-          mAdapter.notifyDataSetChanged();
-        }
-      }
+    String columnOrderName;
+    switch (view.getId()) {
+      case R.id.editTextFromDate :
+        fromDatePickerDialog.show();
+        break;
+      case R.id.editTextToDate:
+        toDatePickerDialog.show();
+        break;
+      case R.id.textViewDateLabel:
+        columnOrderName = QueriesUtil.getDatabaseColumnNameByViewId(view.getId());
+        QueriesUtil.orderTableData(ResponseObject.class, mAdapter, mAdapterData, mBroadcastName,  columnOrderName, fromCalendar, toCalendar);
+        break;
+      case R.id.textViewSendToLabel:
+        columnOrderName = QueriesUtil.getDatabaseColumnNameByViewId(view.getId());
+        QueriesUtil.orderTableData(ResponseObject.class, mAdapter, mAdapterData, mBroadcastName, columnOrderName, fromCalendar, toCalendar);
+        break;
+      case R.id.textViewSendTextLabel:
+        columnOrderName = QueriesUtil.getDatabaseColumnNameByViewId(view.getId());
+        QueriesUtil.orderTableData(ResponseObject.class, mAdapter, mAdapterData, mBroadcastName, columnOrderName, fromCalendar, toCalendar);
     }
   }
 
@@ -179,8 +191,4 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
   protected String getBroadcastName() {
     return mBroadcastName;
   }
-
-//  protected void setAdapter(RecyclerView.Adapter adapter) {
-//    this.mAdapter = adapter;
-//  }
 }

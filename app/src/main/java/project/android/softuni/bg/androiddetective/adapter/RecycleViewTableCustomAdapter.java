@@ -49,7 +49,7 @@ public class RecycleViewTableCustomAdapter extends RecyclerView.Adapter<RecycleV
   public void onBindViewHolder(RecycleViewTableCustomAdapter.ViewHolder holder, int position) {
     if ((holder != null) && (mAdapterData != null) && (mAdapterData.size() > 0)) {
       holder.mTextViewDate.setText(DateUtil.convertDateToShortString(mAdapterData.get(position).getDate()));
-      holder.mTextViewSendTo.setText(mAdapterData.get(position).getSendText());
+      holder.mTextViewSendTo.setText(mAdapterData.get(position).getSendTo());
       holder.mTextViewSendText.setText(mAdapterData.get(position).getSendText());
     }
   }

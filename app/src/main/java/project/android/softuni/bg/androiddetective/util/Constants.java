@@ -5,12 +5,18 @@ package project.android.softuni.bg.androiddetective.util;
  */
 
 public class Constants {
-  public static final String WEB_API_URL = "https://jsonblob.com/api/jsonBlob";
+
+  public static final String SETTING_JSON_BLOB_API_URL_DB_NAME = "jsonBlobApiUrl";
+  public static final String SETTING_JSON_BLOB_API_URL_VALUE = "https://jsonblob.com/api/jsonBlob";
   public static final String RABBIT_MQ_CONTENT_TYPE = "image";
-  public static final String RABBIT_MQ_URI = "amqp://jdkiyofw:BQl1KMaDSs-6VQbaGM7AO-dhPrvw_Soe@wildboar.rmq.cloudamqp.com/jdkiyofw";
-  //public static final String RABBIT_MQ_URI = "amqp://rzqmutrv:1kFbX3tXuCWzpRPy86neVmQhuscZ31Yg@hare.rmq.cloudamqp.com/rzqmutrv";
-  public static final String RABBIT_MQ_REQUES_QUEUE_NAME = "rpc_queue";
-  public static final String RABBIT_MQ_IMAGES_PREFIX = "image_";
+  public static final String SETTING_RABBIT_MQ_URI_DB_NAME = "rabbitMqUri";
+  public static final String SETTING_RABBIT_MQ_URI_VALUE = "amqp://jdkiyofw:BQl1KMaDSs-6VQbaGM7AO-dhPrvw_Soe@wildboar.rmq.cloudamqp.com/jdkiyofw";
+  //public static final String SETTING_RABBIT_MQ_URI_VALUE = "amqp://rzqmutrv:1kFbX3tXuCWzpRPy86neVmQhuscZ31Yg@hare.rmq.cloudamqp.com/rzqmutrv";
+
+  public static final String SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME = "rpc_queue";
+  public static final String SETTING_RABBIT_MQ_QUEUE_NAME_VALUE = "rpc_queue";
+
+  public static final String SETTING_RABBIT_MQ_IMAGES_PREFIX_VALUE = "image_";
   public static final String RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX = "image_thumbsnail_";
   public static final String RABBIT_MQ_IMAGES_FOLDER = "images";
 

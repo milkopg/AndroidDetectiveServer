@@ -2,7 +2,6 @@ package project.android.softuni.bg.androiddetective.rabbitmq;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -38,7 +37,7 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
  */
 
 public class RabbitMQServer {
-  private static final String RPC_QUEUE_NAME = Constants.RABBIT_MQ_REQUES_QUEUE_NAME;
+  private static final String RPC_QUEUE_NAME = Constants.SETTING_RABBIT_MQ_QUEUE_NAME_VALUE;
   private static final String TAG = RabbitMQServer.class.getSimpleName();
   private static RabbitMQServer instance;
   private static Context mContext;
@@ -55,7 +54,7 @@ public class RabbitMQServer {
     int retry = 0;
     try {
       factory.setAutomaticRecoveryEnabled(true);
-      factory.setUri(Constants.RABBIT_MQ_URI);
+      factory.setUri(Constants.SETTING_RABBIT_MQ_URI_VALUE);
 
       connection = factory.newConnection();
       channel = connection.createChannel();
@@ -155,7 +154,7 @@ public class RabbitMQServer {
     }
     count.save();
 
-    String imageName = Constants.RABBIT_MQ_IMAGES_PREFIX + counter + ".jpg";
+    String imageName = Constants.SETTING_RABBIT_MQ_IMAGES_PREFIX_VALUE + counter + ".jpg";
     String imageNameThumbnails = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + counter + ".jpg";
     if (bitmap == null) return;
 

@@ -15,14 +15,11 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.Response;
-import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko on 22.9.2016 г..
@@ -46,7 +43,7 @@ public class SendDataTask extends AsyncTask <String, String, String>{
     
     try {
       URL u ;
-      u = new URL(Constants.WEB_API_URL);
+      u = new URL(Constants.SETTING_JSON_BLOB_API_URL_VALUE);
       conn = (HttpURLConnection) u.openConnection();
       conn.setRequestMethod( Constants.HTTP_REQUEST_METHOD_POST );
       conn.setDoInput(true);

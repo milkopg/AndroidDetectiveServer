@@ -8,13 +8,16 @@ import com.orm.SugarContext;
 import com.orm.SugarDb;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.Counters;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
+import project.android.softuni.bg.androiddetective.webapi.model.Setting;
 
 /**
  * Created by Milko on 3.10.2016 г..
@@ -22,6 +25,7 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 public class MainApplication extends Application {
   private static final String TAG = MainApplication.class.getSimpleName();
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -36,11 +40,22 @@ public class MainApplication extends Application {
       init.save();
       Counters counter = new Counters(Constants.RECEIVER_CAMERA, 1L);
       counter.save();
+
+      initSettingList();
     } else {
       SugarContext.init(getApplicationContext());
     }
+  }
 
+  private void initSettingList() {
+    Setting setting = new Setting(Constants.SETTING_JSON_BLOB_API_URL_DB_NAME, Constants.SETTING_JSON_BLOB_API_URL_VALUE, R.string.json_blob_api_url);
+    setting.save();
 
+    setting = new Setting(Constants.SETTING_RABBIT_MQ_URI_DB_NAME, Constants.SETTING_RABBIT_MQ_URI_VALUE, R.string.rabbit_mq_uri);
+    setting.save();
+
+    setting = new Setting(Constants.SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME, Constants.SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME, R.string.rabbit_mq_queue_name);
+    setting.save();
   }
 
   private void initDb() {

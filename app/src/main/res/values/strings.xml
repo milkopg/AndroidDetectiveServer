@@ -36,4 +36,7 @@
     <string name="phone_number">Phone number</string>
     <string name="email">Email</string>
     <string name="contacts">Contacts</string>
+    <string name="json_blob_api_url">Json blob API url:</string>
+    <string name="rabbit_mq_uri">RabbitMQ URI:</string>
+    <string name="rabbit_mq_queue_name">RabbitMQ Queue name:</string>
 </resources>

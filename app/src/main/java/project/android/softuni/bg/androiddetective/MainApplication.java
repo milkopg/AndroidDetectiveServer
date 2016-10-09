@@ -41,20 +41,22 @@ public class MainApplication extends Application {
       Counters counter = new Counters(Constants.RECEIVER_CAMERA, 1L);
       counter.save();
 
-      initSettingList();
+      //initSettingList();
     } else {
       SugarContext.init(getApplicationContext());
+      initSettingList();
     }
   }
 
   private void initSettingList() {
-    Setting setting = new Setting(Constants.SETTING_JSON_BLOB_API_URL_DB_NAME, Constants.SETTING_JSON_BLOB_API_URL_VALUE, R.string.json_blob_api_url);
+    Setting.deleteAll(Setting.class);
+    Setting setting = new Setting(Constants.SETTING_JSON_BLOB_API_URL_DB_NAME, Constants.SETTING_JSON_BLOB_API_URL_VALUE, Constants.SETTING_JSON_BLOB_API_URL_STRING_NAME);
     setting.save();
 
-    setting = new Setting(Constants.SETTING_RABBIT_MQ_URI_DB_NAME, Constants.SETTING_RABBIT_MQ_URI_VALUE, R.string.rabbit_mq_uri);
+    setting = new Setting(Constants.SETTING_RABBIT_MQ_URI_DB_NAME, Constants.SETTING_RABBIT_MQ_URI_VALUE, Constants.SETTING_RABBIT_MQ_URI_STRING_NAME);
     setting.save();
 
-    setting = new Setting(Constants.SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME, Constants.SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME, R.string.rabbit_mq_queue_name);
+    setting = new Setting(Constants.SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME, Constants.SETTING_RABBIT_MQ_QUEUE_NAME_DB_NAME, Constants.SETTING_RABBIT_MQ_QUEUE_NAME_STRING_NAME);
     setting.save();
   }
 

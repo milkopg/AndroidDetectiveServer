@@ -9,15 +9,15 @@ import com.orm.SugarRecord;
 public class Setting extends SugarRecord{
   private String name;
   private String value;
-  private int resourceId;
+  private String resourceName;
 
   public Setting() {
   }
 
-  public Setting(String name, String value, int resourceId) {
+  public Setting(String name, String value, String resourceName) {
     this.name = name;
     this.value = value;
-    this.resourceId = resourceId;
+    this.resourceName = resourceName;
   }
 
   public String getName() {
@@ -36,11 +36,11 @@ public class Setting extends SugarRecord{
     this.value = value;
   }
 
-  public int getResourceId() {
-    return resourceId;
+  public String getResourceName() {
+    return resourceName;
   }
 
-  public void setResourceId(int resourceId) {
-    this.resourceId = resourceId;
+  public void setResourceName(String resourceName) {
+    this.resourceName = resourceName;
   }
 }

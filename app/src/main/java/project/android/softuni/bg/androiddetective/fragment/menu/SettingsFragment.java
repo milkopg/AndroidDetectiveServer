@@ -40,9 +40,8 @@ public class SettingsFragment extends Fragment {
       TextView textViewLabel = new TextView(getContext());
       textViewLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
               ViewGroup.LayoutParams.WRAP_CONTENT));
-      textViewLabel.setText(getResources().getText(setting.getResourceId()));
+      textViewLabel.setText(getResources().getText(getResources().getIdentifier(setting.getResourceName(), "string", getContext().getPackageName())));
       rowLinear.addView(textViewLabel);
-
       //Add Setting value EditText
       EditText editTextValue = new EditText(getContext());
       editTextValue.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

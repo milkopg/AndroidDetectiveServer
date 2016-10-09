@@ -39,4 +39,6 @@
     <string name="json_blob_api_url">Json blob API url:</string>
     <string name="rabbit_mq_uri">RabbitMQ URI:</string>
     <string name="rabbit_mq_queue_name">RabbitMQ Queue name:</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>

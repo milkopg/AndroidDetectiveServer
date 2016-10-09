@@ -61,5 +61,9 @@ public class Constants {
   public static final String COLUMN_RESPONSE_OBJECT_DATE = "DATE";
   public static final String COLUMN_RESPONSE_OBJECT_SEND_TO = "SEND_TO";
   public static final String COLUMN_RESPONSE_OBJECT_SEND_TEXT = "SEND_TEXT";
+  public static final String COLUMN_SETTING_NAME = "NAME";
+  public static final String COLUMN_SETTING_VALUE = "VALUE";
+  public static final String COLUMN_SETTING_RESOURCE_NAME = "RESOURCE_NAME";
+
 
 }

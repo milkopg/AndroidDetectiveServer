@@ -13,6 +13,7 @@ import java.util.List;
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
+import project.android.softuni.bg.androiddetective.webapi.model.Setting;
 import project.android.softuni.bg.androiddetective.webapi.model.Sorter;
 
 /**
@@ -38,22 +39,22 @@ public class QueriesUtil {
   public static String getDatabaseColumnNameByViewId(int viewId) {
     String columnName = null;
     switch (viewId) {
-      case  R.id.textViewContactName :
+      case R.id.textViewContactName:
         columnName = Constants.COLUMN_CONTACT_NAME;
         break;
-      case R.id.textViewContactPhoneNumber :
+      case R.id.textViewContactPhoneNumber:
         columnName = Constants.COLUMN_CONTACT_PHONE_NUMBER;
         break;
-      case R.id.textViewContactEmail :
+      case R.id.textViewContactEmail:
         columnName = Constants.COLUMN_CONTACT_EMAIL;
         break;
-      case R.id.textViewDateLabel :
+      case R.id.textViewDateLabel:
         columnName = Constants.COLUMN_RESPONSE_OBJECT_DATE;
         break;
       case R.id.textViewSendToLabel:
         columnName = Constants.COLUMN_RESPONSE_OBJECT_SEND_TO;
         break;
-      case R.id.textViewSendTextLabel :
+      case R.id.textViewSendTextLabel:
         columnName = Constants.COLUMN_RESPONSE_OBJECT_SEND_TEXT;
         break;
     }
@@ -69,15 +70,26 @@ public class QueriesUtil {
 
 
   public static void orderTableData(Class<ResponseObject> responseClass, RecyclerView.Adapter mAdapter, List<ResponseObject> mAdapterData, String columnName, String orderByColumnName, Calendar fromCalendar, Calendar toCalendar) {
-    if (mAdapterData == null || mAdapter == null || columnName == null || orderByColumnName == null || fromCalendar == null || toCalendar == null) return;
+    if (mAdapterData == null || mAdapter == null || columnName == null || orderByColumnName == null || fromCalendar == null || toCalendar == null)
+      return;
     boolean asc = QueriesUtil.getAscOrDescSorting(orderByColumnName);
     String orderBy = QueriesUtil.getOrderBy(asc);
     mAdapterData.clear();
-    mAdapterData.addAll(ResponseObject.find(responseClass, Constants.BROADCAST_NAME + " LIKE '"+ columnName  + "' AND DATE > " + fromCalendar.getTime().getTime()+ " AND  DATE < " + toCalendar.getTime().getTime(), null, null, orderByColumnName + " " + orderBy, null));
+    mAdapterData.addAll(ResponseObject.find(responseClass, Constants.BROADCAST_NAME + " LIKE '" + columnName + "' AND DATE > " + fromCalendar.getTime().getTime() + " AND  DATE < " + toCalendar.getTime().getTime(), null, null, orderByColumnName + " " + orderBy, null));
     mAdapter.notifyDataSetChanged();
   }
 
   public static String getOrderBy(boolean ascending) {
     return ascending ? Constants.ORDER_BY_ASC : Constants.ORDER_BY_DESC;
+  }
+
+  public static Setting getSettingByDatabaseKey(String databaseKey) {
+    if (databaseKey == null) return null;
+    List<Setting> settings = Setting.find(Setting.class, Constants.COLUMN_SETTING_RESOURCE_NAME + " LIKE '" + databaseKey + "'", null, null, null, null);
+    if (settings != null && settings.size() > 0) {
+      return settings.get(0);
+    } else {
+      return null;
+    }
   }
 }

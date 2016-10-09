@@ -1,9 +1,12 @@
 package project.android.softuni.bg.androiddetective.fragment.menu;
 
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.transition.Visibility;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,26 +15,34 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import project.android.softuni.bg.androiddetective.R;
+import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.QueriesUtil;
+import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 import project.android.softuni.bg.androiddetective.webapi.model.Setting;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
+  private static final String TAG = SettingsFragment.class.getSimpleName();
   private Button mButtonOk;
   private Button mButtonCancel;
   private LinearLayout mParentLinear;
+  private View mView;
+  private HashMap<Integer, String> mEditTextIdsMap;
 
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_settings, container, false);
+    mView = inflater.inflate(R.layout.fragment_settings, container, false);
+    mEditTextIdsMap = new HashMap<>();
 
-    mButtonOk = (Button) view.findViewById(R.id.buttonSettingsOk);
-    mButtonCancel = (Button) view.findViewById(R.id.buttonSettingsCancel);
+    mButtonOk = (Button) mView.findViewById(R.id.buttonSettingsOk);
+    mButtonCancel = (Button) mView.findViewById(R.id.buttonSettingsCancel);
 
     mButtonOk.setOnClickListener(this);
     mButtonCancel.setOnClickListener(this);
@@ -40,7 +51,16 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 //    for (ResponseObject responseObject : cameras){
 //      responseObject.delete();
 //    }
+    fillSettings();
+
+    return mView;
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+  private void fillSettings() {
+    View view = mView;
     mParentLinear = (LinearLayout) view.findViewById(R.id.layout_linear_fragment_settints);
+    mParentLinear.removeAllViews();
     LinearLayout rowLinear;
     List<Setting> settingsList = Setting.find(Setting.class, null, null, null, "NAME ASC", null);
 
@@ -75,44 +95,73 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
       editTextValue.setSingleLine(true);
       editTextValue.setMaxLines(1);
       editTextValue.setGravity(Gravity.LEFT);
+      editTextValue.setId(View.generateViewId());
+      mEditTextIdsMap.put(editTextValue.getId(), setting.getResourceName());
       rowLinear.addView(editTextValue);
 
 
       //add rowLinearLayout to mParentLinear
       mParentLinear.addView(rowLinear);
     }
-    return view;
   }
 
   @Override
   public void onClick(View view) {
     switch (view.getId()) {
       case R.id.buttonSettingsOk:
-        onConfirm();
+        if (validateInput())
+            onConfirm();
         break;
       case R.id.buttonSettingsCancel:
-        onCancel();
+        onCancel(mView);
         break;
     }
   }
 
+  private boolean validateInput() {
+    boolean valid = true;
+    for (Map.Entry<Integer, String > entry : mEditTextIdsMap.entrySet()) {
+      EditText editText = (EditText) mView.findViewById(entry.getKey());
+      if (editText.getText().toString().length() == 0) {
+        editText.setError(getString(R.string.fields_cannot_be_blank));
+        valid = false;
+      }
+
+      if (Constants.SETTING_JSON_BLOB_API_URL_STRING_NAME.equals(entry.getValue())) {
+        if (!editText.getText().toString().startsWith("https")) {
+          editText.setError(getString(R.string.not_valid_url));
+          valid = false;
+        }
+      }
+
+      if (Constants.SETTING_RABBIT_MQ_URI_STRING_NAME.equals(entry.getValue())) {
+        if (!editText.getText().toString().startsWith("amqp")) {
+          editText.setError((getString(R.string.not_valid_rabbitmq_url)));
+          valid = false;
+        }
+      }
+    }
+    Log.d(TAG, "validateInput valid : " + valid);
+    return valid;
+  }
+
   public void onConfirm() {
-    final int childcount = mParentLinear.getChildCount();
-    for (int i = 0; i < childcount; i++) {
+    final int childCount = mParentLinear.getChildCount();
+    for (int i = 0; i < childCount; i++) {
       if (mParentLinear.getChildAt(i) instanceof LinearLayout) {
         LinearLayout innerLinear = ((LinearLayout) (mParentLinear.getChildAt(i)));
-        String dbkey = null;
+        String databaseKey = null;
         for (int j = 0; j < innerLinear.getChildCount(); j++) {
           View view = ((TextView) (innerLinear.getChildAt(j)));
           if (view instanceof TextView) {
             TextView hidden = (TextView) view;
             if (hidden.getVisibility() == View.GONE) {
-              dbkey = (String) hidden.getText();
+              databaseKey = (String) hidden.getText();
             }
           }
           if (view instanceof EditText) {
             EditText et = (EditText) view;
-            Setting setting = QueriesUtil.getSettingByDatabaseKey(dbkey);
+            Setting setting = QueriesUtil.getSettingByDatabaseKey(databaseKey);
             if (setting != null) {
               setting.setValue(et.getText().toString());
               setting.save();
@@ -121,15 +170,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         }
       }
     }
+    Toast.makeText(getContext(), R.string.save_sucessfull, Toast.LENGTH_SHORT).show();
   }
 
-  public void onCancel() {
-
-  }
-
-  private interface OnSettingButtonClickListener {
-    public void onConfirm();
-
-    public void onCancel();
+  @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+  public void onCancel(View view) {
+    fillSettings();
+    Toast.makeText(getContext(), R.string.setting_are_restored_from_database, Toast.LENGTH_SHORT).show();
   }
 }

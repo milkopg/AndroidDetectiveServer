@@ -92,4 +92,8 @@ public class QueriesUtil {
       return null;
     }
   }
+
+  public static String getNotNullValue(String object, String defaultValue) {
+    return  object == null ? defaultValue : object;
+  }
 }

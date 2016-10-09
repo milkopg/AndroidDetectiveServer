@@ -41,10 +41,9 @@ public class MainApplication extends Application {
       Counters counter = new Counters(Constants.RECEIVER_CAMERA, 1L);
       counter.save();
 
-      //initSettingList();
+      initSettingList();
     } else {
       SugarContext.init(getApplicationContext());
-      initSettingList();
     }
   }
 

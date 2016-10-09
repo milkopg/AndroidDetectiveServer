@@ -28,6 +28,7 @@ import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.NotificationManagerLocal;
+import project.android.softuni.bg.androiddetective.util.QueriesUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 import project.android.softuni.bg.androiddetective.webapi.model.Counters;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
@@ -37,13 +38,14 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
  */
 
 public class RabbitMQServer {
-  private static final String RPC_QUEUE_NAME = Constants.SETTING_RABBIT_MQ_QUEUE_NAME_VALUE;
   private static final String TAG = RabbitMQServer.class.getSimpleName();
   private static RabbitMQServer instance;
   private static Context mContext;
+  private String rabbitMqQueueName = QueriesUtil.getNotNullValue(QueriesUtil.getSettingByDatabaseKey(Constants.SETTING_RABBIT_MQ_QUEUE_NAME_STRING_NAME).getValue(), Constants.SETTING_RABBIT_MQ_QUEUE_NAME_VALUE);
+  private String rabbitMQUri = QueriesUtil.getNotNullValue(QueriesUtil.getSettingByDatabaseKey(Constants.SETTING_RABBIT_MQ_URI_STRING_NAME).getValue(), Constants.SETTING_RABBIT_MQ_URI_VALUE);
 
   public RabbitMQServer(Context context) {
-    this.mContext = context;
+    RabbitMQServer.mContext = context;
   }
 
   public void receiveMessage() {
@@ -54,16 +56,16 @@ public class RabbitMQServer {
     int retry = 0;
     try {
       factory.setAutomaticRecoveryEnabled(true);
-      factory.setUri(Constants.SETTING_RABBIT_MQ_URI_VALUE);
+      factory.setUri(rabbitMQUri);
 
       connection = factory.newConnection();
       channel = connection.createChannel();
 
-      channel.queueDeclare(RPC_QUEUE_NAME, false, false, false, null);
+      channel.queueDeclare(rabbitMqQueueName, false, false, false, null);
       channel.basicQos(1);
 
       QueueingConsumer consumer = new QueueingConsumer(channel);
-      channel.basicConsume(RPC_QUEUE_NAME, false, consumer);
+      channel.basicConsume(rabbitMqQueueName, false, consumer);
 
       System.out.println(" [x] Awaiting RPC requests");
       Log.d(TAG, " [x] Awaiting RPC requests");
@@ -163,34 +165,27 @@ public class RabbitMQServer {
     Log.d(TAG, "processImageResponse: imagePath "  + imagePath);
     Log.d(TAG, "processImageResponse: imagePathThum "  + imagePathThum);
 
-//    BitmapFactory.Options options = new BitmapFactory.Options();
-//    options.inSampleSize = 2;
-//    Bitmap bm = BitmapFactory.decodeFile(imageNameThumbnails, options);
-//    BitmapUtil.saveToInternalStorage(mContext, bm, imageNameThumbnails);
-
-
-
     ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", imageNameThumbnails, 0, imageName, imagePath);
     persistObjectAndShowNotification(responseObject);
   }
 
-  private void createThumbnailBitmap(String fullPath) {
-    Bitmap thumbnail = null;
-    File thumbnailFile;
-    FileOutputStream fos = null;
-    try {
-      thumbnailFile = new File(fullPath);
-      fos = new FileOutputStream(thumbnailFile);
-      thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-      fos.flush();
-      fos.close();
-    } catch (FileNotFoundException e) {
-      Log.e(TAG, "createThumbnailBitmap: FileNotFoundException " + e);
-    } catch (IOException e) {
-      Log.e(TAG, "createThumbnailBitmap: IOException " + e);
-    }
-
-  }
+//  private void createThumbnailBitmap(String fullPath) {
+//    Bitmap thumbnail = null;
+//    File thumbnailFile;
+//    FileOutputStream fos = null;
+//    try {
+//      thumbnailFile = new File(fullPath);
+//      fos = new FileOutputStream(thumbnailFile);
+//      thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+//      fos.flush();
+//      fos.close();
+//    } catch (FileNotFoundException e) {
+//      Log.e(TAG, "createThumbnailBitmap: FileNotFoundException " + e);
+//    } catch (IOException e) {
+//      Log.e(TAG, "createThumbnailBitmap: IOException " + e);
+//    }
+//
+//  }
 
   private String deserializeByArrayToString(byte [] response) {
     String inputLine;

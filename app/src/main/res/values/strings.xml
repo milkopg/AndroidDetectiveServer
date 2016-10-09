@@ -41,4 +41,9 @@
     <string name="rabbit_mq_queue_name">RabbitMQ Queue name:</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="fields_cannot_be_blank">Fields cannot be blank</string>
+    <string name="not_valid_url">Not valid uri</string>
+    <string name="not_valid_rabbitmq_url">Not valid RabbitMQ Url</string>
+    <string name="save_sucessfull">Save successful!</string>
+    <string name="setting_are_restored_from_database">Settings are restored from datasbase.</string>
 </resources>

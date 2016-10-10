@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
@@ -50,7 +48,6 @@ public class RecycleViewImageCustomAdapter extends  RecyclerView.Adapter<Recycle
 
   @Override
   public void onBindViewHolder(RecycleViewImageCustomAdapter.ViewHolder holder, int position) {
-    //Picasso.with(mContext).load(mAdapterData.get(position).imagePath + "/" + mAdapterData.get(position).imageName).resize(240, 120).into(holder.imageViewCameraPicture);
 
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inSampleSize = 2;
@@ -58,7 +55,6 @@ public class RecycleViewImageCustomAdapter extends  RecyclerView.Adapter<Recycle
     holder.imageViewCameraPicture.setImageBitmap(bm);
 
     holder.textViewCameraPictureInfo.setText(mAdapterData.get(position).imageName);
-    ///data/data/project.android.softuni.bg.androiddetective/app_images/image_1.jpg
   }
 
   @Override

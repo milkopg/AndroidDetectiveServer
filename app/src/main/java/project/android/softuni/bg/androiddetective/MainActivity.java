@@ -33,14 +33,12 @@ import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.gestures.GestureFilter;
 import project.android.softuni.bg.androiddetective.listener.IOnImageClickListener;
-import project.android.softuni.bg.androiddetective.listener.IServiceCommunicationListener;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.Constants;
-import project.android.softuni.bg.androiddetective.util.GsonManager;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity implements IServiceCommunicationListener, GestureFilter.SimpleGestureListener,IOnImageClickListener
+public class MainActivity extends AppCompatActivity implements GestureFilter.SimpleGestureListener,IOnImageClickListener
 {
 
   private String[] mNavigationDrawerItemTitles;
@@ -53,12 +51,6 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
   private ServiceConnection mConnection;
   private MainApplication app;
   private GestureFilter detector;
-
-  @Override
-  public void receiveJsonData(String data) {
-    ResponseObject responseObject = GsonManager.convertGsonStringToObject(data);
-    responseObject.save();
-  }
 
   @Override
   public void onClick(AdapterView<?> adapter, int position) {
@@ -287,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
   private void setupService() {
     Intent service = new Intent(this, DetectiveServerService.class);
-    mConnection = ServiceConnectionManager.getInstance(MainActivity.this);
+    mConnection = ServiceConnectionManager.getInstance();
     bindService(service, mConnection, Context.BIND_AUTO_CREATE);
     startService(service);
   }

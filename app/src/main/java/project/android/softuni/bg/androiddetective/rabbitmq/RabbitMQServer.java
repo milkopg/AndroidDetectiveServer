@@ -43,6 +43,7 @@ public class RabbitMQServer {
   private static Context mContext;
   private String rabbitMqQueueName = QueriesUtil.getNotNullValue(QueriesUtil.getSettingByDatabaseKey(Constants.SETTING_RABBIT_MQ_QUEUE_NAME_STRING_NAME).getValue(), Constants.SETTING_RABBIT_MQ_QUEUE_NAME_VALUE);
   private String rabbitMQUri = QueriesUtil.getNotNullValue(QueriesUtil.getSettingByDatabaseKey(Constants.SETTING_RABBIT_MQ_URI_STRING_NAME).getValue(), Constants.SETTING_RABBIT_MQ_URI_VALUE);
+  int retry = 0;
 
   public RabbitMQServer(Context context) {
     RabbitMQServer.mContext = context;
@@ -53,7 +54,6 @@ public class RabbitMQServer {
     Connection connection = null;
     ConnectionFactory factory = new ConnectionFactory();
     byte[] responseArray;
-    int retry = 0;
     try {
       factory.setAutomaticRecoveryEnabled(true);
       factory.setUri(rabbitMQUri);
@@ -103,11 +103,11 @@ public class RabbitMQServer {
         }
       }
     } catch (Exception e) {
-      Log.e(TAG, "Cannot open RabbitMQ Connection: " + e);
+      Log.e(TAG, "Cannot open RabbitMQ Connection: retry " + retry);
       if (retry < 5) {
         retry++;
         try {
-          Thread.sleep(5000);
+          Thread.sleep(10000);
         } catch (InterruptedException e1) {
           Log.e(TAG, "Thread cannot sleep " + e1);
         }

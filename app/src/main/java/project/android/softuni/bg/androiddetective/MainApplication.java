@@ -8,9 +8,7 @@ import com.orm.SugarContext;
 import com.orm.SugarDb;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import project.android.softuni.bg.androiddetective.util.Constants;

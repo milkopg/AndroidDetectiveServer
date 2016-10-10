@@ -4,12 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
-
 
     <application
         android:name=".MainApplication"
@@ -18,11 +15,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <meta-data android:name="DATABASE" android:value="android_detective_server.db" />
-        <meta-data android:name="VERSION" android:value="12" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="project.android.softuni.bg.androiddetective" />
+        <meta-data
+            android:name="DATABASE"
+            android:value="android_detective_server.db"/>
+        <meta-data
+            android:name="VERSION"
+            android:value="12"/>
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true"/>
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="project.android.softuni.bg.androiddetective"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -38,8 +42,14 @@
             android:enabled="true"
             android:exported="true">
         </service>
-
-
+        <receiver
+            android:name=".broacast.NetworkChangeReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
 
 import java.util.Date;
 import java.util.List;
@@ -40,6 +41,7 @@ public class ResponseObject extends SugarRecord implements Parcelable {
   private String imagePath;
 
   @SerializedName("contacts")
+  @Ignore
   private List<Contact> contacts;
 
   public ResponseObject() {}

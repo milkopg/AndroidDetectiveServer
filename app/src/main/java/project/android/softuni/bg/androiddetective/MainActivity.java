@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements IServiceCommunica
 
     setupService();
 
-    checkNotificationIntent(mDrawerItem);
-
     selectItem(1);
+
+    checkNotificationIntent(mDrawerItem);
   }
 
 

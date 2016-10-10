@@ -49,7 +49,22 @@ public class BitmapUtil {
         Log.e(TAG, "saveToInternalStorage Cannot close FileOutputStream: " + e);
       }
     }
+
     return directory.getAbsolutePath();
+  }
+
+  public static byte [] compressImage(byte [] image) {
+    Bitmap bitmap = getImage(image);
+    ByteArrayOutputStream bos = null;
+    boolean success;
+    try {
+      bos = new ByteArrayOutputStream(image.length);
+      success = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+    } catch (Exception e) {
+      Log.e(TAG, "compressImage cannot open OutputStream");
+      return  null;
+    }
+    return success ? bos.toByteArray() : image;
   }
 
 }

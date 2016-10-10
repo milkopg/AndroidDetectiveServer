@@ -96,7 +96,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     setDateTimeField();
 
-    setupPinch();
+    //setupPinch();
 
     return rootView;
   }

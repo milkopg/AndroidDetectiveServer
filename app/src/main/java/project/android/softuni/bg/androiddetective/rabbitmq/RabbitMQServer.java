@@ -138,26 +138,29 @@ public class RabbitMQServer {
     return message;
   }
 
-  private void processImageResponse(byte[] response, String correlationId) {
+  private synchronized void processImageResponse(byte[] response, String correlationId) {
     String deserializedString = deserializeByArrayToString(response);
     byte[] deserializedByteArray = Base64.decode(deserializedString, Base64.NO_WRAP);
 
     Bitmap bitmap = BitmapUtil.getImage(deserializedByteArray);
     Bitmap bitmapThumbNail = BitmapUtil.getImage(deserializedByteArray);
 
-    List<Counters> counters = Counters.find(Counters.class, null, null, null, "counter DESC", "1");
-    long counter = counters != null && counters.size() > 0 ? counters.get(0).getCounter() : 1;
-    Counters count = Counters.findById(Counters.class, counter);
+    List<Counters> counters = Counters.find(Counters.class, null, null, null, "ID DESC", "1");
+    long id = counters != null && counters.size() > 0 ? counters.get(0).getId() : 1;
+    Counters count = Counters.findById(Counters.class, id);
     if (count == null) {
-      count = new Counters(Constants.RECEIVER_CAMERA, counter );
+      Counters.deleteAll(Counters.class);
+      count = new Counters(Constants.RECEIVER_CAMERA, id );
     } else {
-      counter++;
-      count.setCounter(counter);
+      Counters.deleteAll(Counters.class);
+      count = new Counters(Constants.RECEIVER_CAMERA, id );
+      id++;
+      count.setCounter(id);
     }
     count.save();
 
-    String imageName = Constants.SETTING_RABBIT_MQ_IMAGES_PREFIX_VALUE + counter + ".jpg";
-    String imageNameThumbnails = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + counter + ".jpg";
+    String imageName = Constants.SETTING_RABBIT_MQ_IMAGES_PREFIX_VALUE + id + ".jpg";
+    String imageNameThumbnails = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + id + ".jpg";
     if (bitmap == null) return;
 
     String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);

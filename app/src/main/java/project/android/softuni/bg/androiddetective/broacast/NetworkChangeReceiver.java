@@ -11,7 +11,10 @@ import android.widget.Toast;
 import project.android.softuni.bg.androiddetective.service.DetectiveServerService;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
 
+import static android.support.v7.widget.StaggeredGridLayoutManager.TAG;
+
 public class NetworkChangeReceiver extends BroadcastReceiver {
+  public static final String TAG = NetworkChangeReceiver.class.getSimpleName();
 
   public NetworkChangeReceiver() {
   }
@@ -29,11 +32,13 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
       Toast.makeText(context, "Internet connection is on", Toast.LENGTH_LONG).show();
       Intent service = new Intent(context, DetectiveServerService.class);
       context.startService(service);
+      Log.d(TAG, "Internet connection is on: service started" );
 
     } else {
       Toast.makeText(context, "Internet connection is Off", Toast.LENGTH_LONG).show();
       Intent service = new Intent(context, DetectiveServerService.class);
       context.stopService(service);
+      Log.d(TAG, "Internet connection is off: service stopped" );
     }
   }
 }

@@ -81,13 +81,14 @@ public class RabbitMQServer {
                 .Builder()
                 .contentType(props.getContentType())
                 .correlationId(props.getCorrelationId())
+                .messageId(props.getMessageId())
                 .build();
 
         try {
           if (isJsonMessage(replyProps.getContentType())) {
             response = processRegularResponse(responseArray);
           } else {
-            processImageResponse(responseArray, replyProps.getCorrelationId());
+            processImageResponse(responseArray, replyProps.getMessageId());
           }
 
         } catch (Exception e) {
@@ -138,7 +139,7 @@ public class RabbitMQServer {
     return message;
   }
 
-  private synchronized void processImageResponse(byte[] response, String correlationId) {
+  private synchronized void processImageResponse(byte[] response, String messageId) {
     String deserializedString = deserializeByArrayToString(response);
     byte[] deserializedByteArray = Base64.decode(deserializedString, Base64.NO_WRAP);
 
@@ -168,7 +169,7 @@ public class RabbitMQServer {
     Log.d(TAG, "processImageResponse: imagePath "  + imagePath);
     Log.d(TAG, "processImageResponse: imagePathThum "  + imagePathThum);
 
-    ResponseObject responseObject = new ResponseObject(correlationId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", imageNameThumbnails, 0, imageName, imagePath);
+    ResponseObject responseObject = new ResponseObject(messageId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", imageNameThumbnails, 0, imageName, imagePath);
     persistObjectAndShowNotification(responseObject);
   }
 

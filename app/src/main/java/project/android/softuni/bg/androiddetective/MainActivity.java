@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
   private ServiceConnection mConnection;
   private MainApplication app;
   private GestureFilter detector;
+  private int mDrawerPosition;
 
   @Override
   public void onClick(AdapterView<?> adapter, int position) {
@@ -116,26 +117,9 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
-      // Should we show an explanation?
       if (ActivityCompat.shouldShowRequestPermissionRationale(this,
               Manifest.permission.INTERNET)) {
-
-        // Show an expanation to the user *asynchronously* -- don't block
-        // this thread waiting for the user's response! After the user
-        // sees the explanation, try again to request the permission.
-
-      }/* else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.INTERNET, Manifest.permission.READ_PHONE_STATE, Manifest.permission.ACCESS_NETWORK_STATE},
-                        1);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }*/
+       }
     }
 
     setupService();
@@ -153,37 +137,49 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     return super.dispatchTouchEvent(motionEvent);
   }
 
-//  @Override
-//  public void onSwipe(int direction) {
-//    String text = "";
-//    int position = 0;
-//
-//    switch (direction) {
-//      case GestureFilter.SWIPE_RIGHT :
-//        text = getString(R.string.swipe_right);
-//        break;
-//      case GestureFilter.SWIPE_LEFT :
-//        text = getString(R.string.swipe_left);
-//        break;
-//      case GestureFilter.SWIPE_DOWN :
-//        text = getString(R.string.swipe_down);
-//        position = 1;
-//        //replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//        break;
-//      case GestureFilter.SWIPE_UP :
-//        text = getString(R.string.swipe_up);
-//        position = 2;
-//       // replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//        break;
-//    }
-//    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-//  }
-
-
   @Override
   public void onSwipe(int direction) {
+    String text = "";
+    int position = 0;
 
+    switch (direction) {
+      case GestureFilter.SWIPE_RIGHT :
+        text = getString(R.string.swipe_right);
+        position = --mDrawerPosition;
+        if (position < 0) {
+          position = 0;
+          mDrawerPosition = 0;
+        }
+        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+        break;
+      case GestureFilter.SWIPE_LEFT :
+        text = getString(R.string.swipe_left);
+        position = ++mDrawerPosition;
+        if (position > mNavigationDrawerItemTitles.length) {
+          position = mNavigationDrawerItemTitles.length;
+          mDrawerPosition = mNavigationDrawerItemTitles.length;
+        }
+        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+        break;
+      case GestureFilter.SWIPE_DOWN :
+        text = getString(R.string.swipe_down);
+//        position = 1;
+//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+        break;
+      case GestureFilter.SWIPE_UP :
+        text = getString(R.string.swipe_up);
+//        position = 2;
+//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+        break;
+    }
+    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
   }
+
+
+//  @Override
+//  public void onSwipe(int direction) {
+//
+//  }
 
   @Override
   public void onDoubleTap() {
@@ -328,6 +324,7 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
       setTitle(mNavigationDrawerItemTitles[drawerPosition]);
       mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
       mDrawerLayout.closeDrawer(mDrawerList);
+      mDrawerPosition = drawerPosition;
 
     } else {
       Log.e("MainActivity", "Error in creating fragment");

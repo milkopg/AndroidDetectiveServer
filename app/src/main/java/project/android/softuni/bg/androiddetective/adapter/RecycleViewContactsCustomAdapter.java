@@ -9,8 +9,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
-import project.android.softuni.bg.androiddetective.listener.IOnContactSortClickListener;
-import project.android.softuni.bg.androiddetective.util.DateUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 
 /**

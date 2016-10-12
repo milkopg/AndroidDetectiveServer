@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     setContentView(R.layout.activity_main);
     app = (MainApplication) getApplication();
     //setTitle(getString(R.string.android_detective_server));
-
     mTitle = mDrawerTitle = getTitle();
     mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -129,11 +128,9 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     checkNotificationIntent(mDrawerItem);
   }
 
-
-
   @Override
   public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-    //this.detector.onTouchEvent(motionEvent);
+    this.detector.onTouchEvent(motionEvent);
     return super.dispatchTouchEvent(motionEvent);
   }
 
@@ -147,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
         text = getString(R.string.swipe_right);
         position = --mDrawerPosition;
         if (position < 0) {
-          position = 0;
-          mDrawerPosition = 0;
+          position = mNavigationDrawerItemTitles.length;
+          mDrawerPosition = position;
         }
         replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
         break;
@@ -156,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
         text = getString(R.string.swipe_left);
         position = ++mDrawerPosition;
         if (position > mNavigationDrawerItemTitles.length) {
-          position = mNavigationDrawerItemTitles.length;
-          mDrawerPosition = mNavigationDrawerItemTitles.length;
+          position = 0;
+          mDrawerPosition = position;
         }
         replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
         break;
@@ -185,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
   public void onDoubleTap() {
     //TODO
   }
-
+//
   @Override
   public void onLongPress() {
     int position = 0;
@@ -209,12 +206,10 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
       selectItem(position);
     }
-
   }
 
   private void selectItem(int position) {
     Fragment fragment = getFragmentByPosition(position);
-
     replaceFragment(fragment, R.id.content_frame, position);
   }
 

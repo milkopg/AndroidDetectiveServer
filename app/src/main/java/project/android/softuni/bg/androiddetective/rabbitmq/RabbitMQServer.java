@@ -14,12 +14,14 @@ import com.rabbitmq.client.QueueingConsumer;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -87,13 +89,21 @@ public class RabbitMQServer {
         try {
           if (isJsonMessage(replyProps.getContentType())) {
             response = processRegularResponse(responseArray);
+            if (response == null) {
+              response = new String(responseArray, "UTF-8");
+              responseArray = getJsonBlobData(generateJsonBlobUrl(replyProps.getMessageId()), null, response);
+              processRegularResponse(responseArray);
+            }
+
           } else {
-            processImageResponse(responseArray, replyProps.getMessageId());
+            response = processImageResponse(responseArray, replyProps.getMessageId());
+            if (response == null)
+              responseArray = getJsonBlobData(generateJsonBlobUrl(replyProps.getMessageId()), responseArray, null);
+              processImageResponse(responseArray, replyProps.getMessageId());
           }
 
         } catch (Exception e) {
           System.out.println(" [.] " + e.toString());
-          response = "";
         } finally {
           try {
             channel.basicPublish("", props.getReplyTo(), replyProps, (isJsonMessage(replyProps.getContentType()) ? response.getBytes("UTF-8") : delivery.getBody()));
@@ -126,12 +136,18 @@ public class RabbitMQServer {
     }
   }
 
-  private String processRegularResponse(byte[] response) {
+  private String generateJsonBlobUrl(String messageId) {
+    return Constants.SETTING_JSON_BLOB_API_URL_VALUE + "/" + messageId;
+  }
+
+  private synchronized String processRegularResponse(byte[] response) {
     String message = null;
+    if (response == null) return null;
     try {
       message = new String(response, "UTF-8");
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      Log.e(TAG, "processRegularResponse " + e);
+      return null;
     }
     Log.d(TAG, "Received message: " + message);
     ResponseObject responseObject = GsonManager.convertGsonStringToObject(message.toString());
@@ -139,7 +155,8 @@ public class RabbitMQServer {
     return message;
   }
 
-  private synchronized void processImageResponse(byte[] response, String messageId) {
+  private synchronized String processImageResponse(byte[] response, String messageId) {
+    if (response == null) return null;
     String deserializedString = deserializeByArrayToString(response);
     byte[] deserializedByteArray = Base64.decode(deserializedString, Base64.NO_WRAP);
 
@@ -162,7 +179,7 @@ public class RabbitMQServer {
 
     String imageName = Constants.SETTING_RABBIT_MQ_IMAGES_PREFIX_VALUE + id + ".jpg";
     String imageNameThumbnails = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + id + ".jpg";
-    if (bitmap == null) return;
+    if (bitmap == null) return null;
 
     String imagePath = BitmapUtil.saveToInternalStorage(mContext, bitmap, imageName);
     String imagePathThum = BitmapUtil.saveToInternalStorage(mContext, ThumbnailUtils.extractThumbnail(bitmapThumbNail, 100, 100), imageNameThumbnails);
@@ -171,25 +188,58 @@ public class RabbitMQServer {
 
     ResponseObject responseObject = new ResponseObject(messageId, Constants.RECEIVER_CAMERA, DateUtil.convertDateLongToShortDate(new Date()), "", imageNameThumbnails, 0, imageName, imagePath);
     persistObjectAndShowNotification(responseObject);
+    return imagePath;
   }
 
-//  private void createThumbnailBitmap(String fullPath) {
-//    Bitmap thumbnail = null;
-//    File thumbnailFile;
-//    FileOutputStream fos = null;
-//    try {
-//      thumbnailFile = new File(fullPath);
-//      fos = new FileOutputStream(thumbnailFile);
-//      thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-//      fos.flush();
-//      fos.close();
-//    } catch (FileNotFoundException e) {
-//      Log.e(TAG, "createThumbnailBitmap: FileNotFoundException " + e);
-//    } catch (IOException e) {
-//      Log.e(TAG, "createThumbnailBitmap: IOException " + e);
-//    }
-//
-//  }
+  protected synchronized byte [] getJsonBlobData(String url, byte[] binaryData, String rawData) {
+    if (binaryData == null && rawData == null) return  null;
+    if (url == null) return null;
+    HttpURLConnection conn = initHttpConnection(url, Constants.HTTP_HEADER_CONTENT_TYPE_JSON);
+    try {
+      if (conn.getResponseCode() == 200) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+        int nRead;
+        byte[] data = new byte[16384];
+
+        while ((nRead = conn.getInputStream().read(data, 0, data.length)) != -1) {
+          buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+        return buffer.toByteArray();
+      }
+
+    } catch (MalformedURLException e) {
+      Log.e(TAG, "MalformedURLException" + e);
+    } catch (ProtocolException e) {
+      Log.e(TAG, "ProtocolException" + e);
+    } catch (IOException e) {
+      Log.e(TAG, "ProtocolException" + e);
+    }
+    return null;
+  }
+
+  private HttpURLConnection initHttpConnection(String url, String mimeType) {
+    HttpURLConnection conn = null;
+    URL u = null;
+    try {
+      u = new URL(url);
+      conn = (HttpURLConnection) u.openConnection();
+      conn.setRequestMethod(Constants.HTTP_REQUEST_METHOD_GET);
+
+      conn.setRequestProperty(Constants.HTTP_HEADER_CONTENT_TYPE, Constants.HTTP_HEADER_CONTENT_TYPE_JSON);
+      conn.setRequestProperty(Constants.HTTP_HEADER_HOST, Constants.HTTP_HEADER_HOST_JSONBLOB);
+      conn.setRequestProperty(Constants.HTTP_HEADER_ACCEPT, mimeType);
+    } catch (MalformedURLException e) {
+      Log.e(TAG, "initHttpConnection MalformedURLException: " + e);
+    } catch (ProtocolException e) {
+      Log.e(TAG, "initHttpConnection ProtocolException: " + e);
+    } catch (IOException e) {
+      Log.e(TAG, "initHttpConnection IOException: " + e);
+    }
+    return conn;
+  }
 
   private String deserializeByArrayToString(byte [] response) {
     String inputLine;

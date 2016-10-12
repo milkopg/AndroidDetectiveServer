@@ -46,4 +46,5 @@
     <string name="not_valid_rabbitmq_url">Not valid RabbitMQ Url</string>
     <string name="save_sucessfull">Save successful!</string>
     <string name="setting_are_restored_from_database">Settings are restored from datasbase.</string>
+    <string name="file_was_deleted_succesfull">Succesfull delete on file: </string>
 </resources>

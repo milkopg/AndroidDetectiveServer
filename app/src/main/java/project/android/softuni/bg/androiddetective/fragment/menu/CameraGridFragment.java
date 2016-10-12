@@ -50,6 +50,13 @@ public class CameraGridFragment extends Fragment{
       }
     });
 
+    gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+      @Override
+      public boolean onItemLongClick(AdapterView<?> adapterView,  View view, int i, long l) {
+        return callback.onLongClick(gridAdapter, view, mAdapterData, i, l);
+      }
+    });
+
     return rootView;
   }
 }

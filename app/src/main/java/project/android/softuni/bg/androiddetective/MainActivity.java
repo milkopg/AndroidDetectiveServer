@@ -22,8 +22,13 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.util.List;
 
 import project.android.softuni.bg.androiddetective.activity.CameraGridDetailsActivity;
+import project.android.softuni.bg.androiddetective.adapter.CameraGridViewAdapter;
 import project.android.softuni.bg.androiddetective.adapter.DrawerItemCustomAdapter;
 import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
@@ -38,7 +43,7 @@ import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity implements GestureFilter.SimpleGestureListener,IOnImageClickListener
+public class MainActivity extends AppCompatActivity implements GestureFilter.SimpleGestureListener, IOnImageClickListener
 {
 
   private String[] mNavigationDrawerItemTitles;
@@ -63,6 +68,25 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
 
     //Start details activity
     startActivity(intent);
+  }
+
+  @Override
+  public boolean onLongClick(CameraGridViewAdapter adapter, View view, List<ResponseObject> mAdapterData, int position, long l) {
+    ResponseObject item = mAdapterData.get(position);
+    File file = new File(item.getImagePath() + "/" + item.getImageName());
+    file.setWritable(true);
+    String counter = item.getImageName().replaceAll("\\D+","");
+    String imageNameThumb = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + Integer.parseInt(counter) + ".jpg";
+    File fileThumb = new File(item.getImagePath() + "/" +imageNameThumb);
+    fileThumb.setWritable(true);
+      if (file.getAbsoluteFile().delete() && fileThumb.getAbsoluteFile().delete()) {
+        mAdapterData.remove(position);
+        ResponseObject.delete(item);
+        mDrawerList.invalidateViews();
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this,  String.format(getResources().getString(R.string.file_was_deleted_succesfull) + " %s", file.getName()), Toast.LENGTH_SHORT).show();
+      }
+    return false;
   }
 
   @Override

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -18,11 +17,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -65,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     app = (MainApplication) getApplication();
-    //setTitle(getString(R.string.android_detective_server));
     mTitle = mDrawerTitle = getTitle();
     mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -80,8 +75,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
 
     setupDrawerToggle();
 
-
-
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
             || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
@@ -92,25 +85,21 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
 
     setupService();
 
-    selectItem(1);
+    int menuId = getIntent().hasExtra(Constants.MENU_ID) ? getIntent().getIntExtra(Constants.MENU_ID, 1) : 1;
+
+    selectItem(menuId);
 
     checkNotificationIntent(mDrawerItem);
   }
 
-//  @Override
-//  public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-//    //this.mDtector.onTouchEvent(motionEvent);
-//    return super.dispatchTouchEvent(motionEvent);
-//  }
-
-  @Override
+ @Override
   public void onClick(AdapterView<?> adapter, int position) {
     ResponseObject item = (ResponseObject) adapter.getItemAtPosition(position);
 
     //Create intent
     Intent intent = new Intent(MainActivity.this, CameraGridDetailsActivity.class);
-    intent.putExtra("title", item.getImageName());
-    intent.putExtra("image", item.getImagePath() + "/" + item.getImageName());
+    intent.putExtra(Constants.INTENT_TITLE, item.getImageName());
+    intent.putExtra(Constants.INTENT_IMAGE, item.getImagePath() + "/" + item.getImageName());
 
     //Start details activity
     startActivity(intent);
@@ -134,66 +123,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     }
     return false;
   }
-
-//  @Override
-//  public void onSwipe(int direction) {
-//    String text = "";
-//    int position = 0;
-//
-//    switch (direction) {
-//      case GestureFilter.SWIPE_RIGHT :
-//        text = getString(R.string.swipe_right);
-//        position = --mDrawerPosition;
-//        if (position < 0) {
-//          position = mNavigationDrawerItemTitles.length;
-//          mDrawerPosition = position;
-//        }
-//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//        break;
-//      case GestureFilter.SWIPE_LEFT :
-//        text = getString(R.string.swipe_left);
-//        position = ++mDrawerPosition;
-//        if (position > mNavigationDrawerItemTitles.length) {
-//          position = 0;
-//          mDrawerPosition = position;
-//        }
-//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//        break;
-//      case GestureFilter.SWIPE_DOWN :
-//        text = getString(R.string.swipe_down);
-////        position = 1;
-////        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//        break;
-//      case GestureFilter.SWIPE_UP :
-//        text = getString(R.string.swipe_up);
-////        position = 2;
-////        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//        break;
-//    }
-//    //Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-  //}
-
-
-//  @Override
-//  public void onSwipe(int direction) {
-//
-//  }
-
-//  @Override
-//  public void onDoubleTap() {
-//    //TODO
-//  }
-////
-//  @Override
-//  public void onLongPress() {
-//    Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-//    if (CameraGridFragment.class.getSimpleName().equals(f.getClass().getSimpleName())) {
-//      return;
-//    }
-//    int position = 0;
-//    replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-//  }
-
 
   private void checkNotificationIntent(DataModel[] mDrawerItem) {
     String receiverName;
@@ -263,12 +192,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
   }
 
   @Override
-  public void setTitle(CharSequence title) {
-    mTitle = title;
-    getSupportActionBar().setTitle(mTitle);
-  }
-
-  @Override
   protected void onPostCreate(Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
     mDrawerToggle.syncState();
@@ -333,7 +256,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     }
   }
 
-
   @Override
   public void onDestroy() {
     super.onDestroy();
@@ -342,13 +264,4 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
       unbindService(mConnection);
     }
   }
-//
-// private static class MyPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-//    @Override
-//    public boolean onScale(ScaleGestureDetector detector) {
-//      Log.d("TAG", "PINCH! OUCH!");
-//      return true;
-//    }
-//  }
-
 }

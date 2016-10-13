@@ -8,10 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
+import project.android.softuni.bg.androiddetective.MainActivity;
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.gestures.GestureFilter;
 import project.android.softuni.bg.androiddetective.util.Constants;
@@ -20,8 +20,8 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 public class CameraGridDetailsActivity extends AppCompatActivity implements GestureFilter.SimpleGestureListener {
   private GestureFilter mDetector;
-  String title;
-  String imagePath;
+  private String title;
+  private String imagePath;
 
 
   @Override
@@ -31,9 +31,8 @@ public class CameraGridDetailsActivity extends AppCompatActivity implements Gest
 
     mDetector = new GestureFilter(this, this);
 
-    title = getIntent().getStringExtra("title");
-    imagePath = getIntent().getStringExtra("image");
-
+    title = getIntent().getStringExtra(Constants.INTENT_TITLE);
+    imagePath = getIntent().getStringExtra(Constants.INTENT_IMAGE);
 
     Bitmap bm = BitmapFactory.decodeFile(imagePath);
 
@@ -85,8 +84,8 @@ public class CameraGridDetailsActivity extends AppCompatActivity implements Gest
 
   private void changePicture(ResponseObject response) {
     Intent intent = new Intent(getBaseContext(), CameraGridDetailsActivity.class);
-    intent.putExtra("title", response.getImageName());
-    intent.putExtra("image", response.getImagePath() + "/" + response.getImageName());
+    intent.putExtra(Constants.INTENT_TITLE, response.getImageName());
+    intent.putExtra(Constants.INTENT_IMAGE, response.getImagePath() + "/" + response.getImageName());
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
     startActivity(intent);
     this.finish();
@@ -94,11 +93,18 @@ public class CameraGridDetailsActivity extends AppCompatActivity implements Gest
 
   @Override
   public void onDoubleTap() {
-
+    gotoMenu(3);
   }
 
   @Override
   public void onLongPress() {
+    gotoMenu(0);
+  }
 
+  private void gotoMenu(int menuID) {
+    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+    intent.putExtra(Constants.MENU_ID, menuID);
+    startActivity(intent);
+    this.finish();
   }
 }

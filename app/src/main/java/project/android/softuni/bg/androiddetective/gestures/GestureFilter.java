@@ -15,7 +15,6 @@ public class GestureFilter extends GestureDetector.SimpleOnGestureListener{
   public static final int SWIPE_LEFT = 3;
   public static final int SWIPE_RIGHT = 4;
 
-  public final static int MODE_TRANSPARENT = 0;
   public final static int MODE_SOLID = 1;
   public final static int MODE_DYNAMIC = 2;
 

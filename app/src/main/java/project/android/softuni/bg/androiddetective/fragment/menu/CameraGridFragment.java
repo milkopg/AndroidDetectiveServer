@@ -67,7 +67,7 @@ public class CameraGridFragment extends Fragment {
     return rootView;
   }
 
-  public void showAlertDialog(Context context, String title, String message, final CameraGridViewAdapter adapterView, final int position) {
+  private void showAlertDialog(Context context, String title, String message, final CameraGridViewAdapter adapterView, final int position) {
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
             context);
 

@@ -20,6 +20,9 @@ public class Constants {
   public static final String SETTING_RABBIT_MQ_QUEUE_NAME_VALUE = "rpc_queue";
   public static final String SETTING_RABBIT_MQ_QUEUE_NAME_STRING_NAME = "rabbit_mq_queue_name";
 
+  public static final String INTENT_IMAGE = "image";
+  public static final String INTENT_TITLE = "title";
+
 
   public static final String SETTING_RABBIT_MQ_IMAGES_PREFIX_VALUE = "image_";
   public static final String RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX = "image_thumbsnail_";
@@ -70,4 +73,5 @@ public class Constants {
   public static final String COLUMN_SETTING_RESOURCE_NAME = "RESOURCE_NAME";
 
 
+  public static final String MENU_ID = "MENU_ID";
 }

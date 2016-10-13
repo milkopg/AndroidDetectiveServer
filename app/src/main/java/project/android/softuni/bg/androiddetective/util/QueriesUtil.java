@@ -61,6 +61,14 @@ public class QueriesUtil {
     return columnName;
   }
 
+  public static List<ResponseObject> getResponseObjectByBroadcastNameAndImageName(String broacastName, String imageName) {
+    return  ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + " LIKE '" + broacastName + "' AND " + Constants.IMAGE_NAME + " = '" + imageName + "'", null, null, "ID DESC", null);
+  }
+
+  public static List<ResponseObject> getResponseObjectByBroadcastName(String broacastName) {
+    return  ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + " LIKE '" + broacastName + "'", null, null, "ID DESC", null);
+  }
+
   public static void orderContactData(Class<Contact> contactClass, RecyclerView.Adapter mAdapter, List<Contact> mAdapterData, String columnName, String orderBy) {
     if (mAdapterData == null || mAdapter == null || columnName == null || orderBy == null) return;
     mAdapterData.clear();
@@ -96,4 +104,5 @@ public class QueriesUtil {
   public static String getNotNullValue(String object, String defaultValue) {
     return  object == null ? defaultValue : object;
   }
+
 }

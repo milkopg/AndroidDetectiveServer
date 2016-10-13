@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project.android.softuni.bg.androiddetective.R;
-import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 public class CameraGridViewAdapter extends ArrayAdapter<ResponseObject> {
@@ -41,7 +40,7 @@ public class CameraGridViewAdapter extends ArrayAdapter<ResponseObject> {
             row = inflater.inflate(mLayoutResourceId, parent, false);
             holder = new ViewHolder();
             holder.imageTitle = (TextView) row.findViewById(R.id.textViewPictureName);
-            holder.image = (ImageView) row.findViewById(R.id.imageViewPicture);
+            holder.image = (ImageView) row.findViewById(R.id.imageViewPictureGrid);
             row.setTag(holder);
         } else {
             holder = (ViewHolder) row.getTag();

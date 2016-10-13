@@ -7,7 +7,7 @@
     android:padding="5dp">
 
     <ImageView
-        android:id="@+id/imageViewPicture"
+        android:id="@+id/imageViewPictureGrid"
         android:layout_width="100dp"
         android:layout_height="100dp" />
 

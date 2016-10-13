@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -43,7 +45,7 @@ import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.ServiceConnectionManager;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
-public class MainActivity extends AppCompatActivity implements GestureFilter.SimpleGestureListener, IOnImageClickListener
+public class MainActivity extends AppCompatActivity implements IOnImageClickListener
 {
 
   private String[] mNavigationDrawerItemTitles;
@@ -55,40 +57,8 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
   private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
   private ServiceConnection mConnection;
   private MainApplication app;
-  private GestureFilter detector;
+  private GestureFilter mDtector;
   private int mDrawerPosition;
-
-  @Override
-  public void onClick(AdapterView<?> adapter, int position) {
-    ResponseObject item = (ResponseObject) adapter.getItemAtPosition(position);
-
-    //Create intent
-    Intent intent = new Intent(MainActivity.this, CameraGridDetailsActivity.class);
-    intent.putExtra("title", item.getImageName());
-    intent.putExtra("image", item.getImagePath() + "/" + item.getImageName());
-
-    //Start details activity
-    startActivity(intent);
-  }
-
-  @Override
-  public boolean onLongClick(CameraGridViewAdapter adapter, View view, List<ResponseObject> mAdapterData, int position, long l) {
-    ResponseObject item = mAdapterData.get(position);
-    File file = new File(item.getImagePath() + "/" + item.getImageName());
-    file.setWritable(true);
-    String counter = item.getImageName().replaceAll("\\D+","");
-    String imageNameThumb = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + Integer.parseInt(counter) + ".jpg";
-    File fileThumb = new File(item.getImagePath() + "/" +imageNameThumb);
-    fileThumb.setWritable(true);
-      if (file.getAbsoluteFile().delete() && fileThumb.getAbsoluteFile().delete()) {
-        mAdapterData.remove(position);
-        ResponseObject.delete(item);
-        mDrawerList.invalidateViews();
-        adapter.notifyDataSetChanged();
-        Toast.makeText(this,  String.format(getResources().getString(R.string.file_was_deleted_succesfull) + " %s", file.getName()), Toast.LENGTH_SHORT).show();
-      }
-    return false;
-  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     mDrawerList = (ListView) findViewById(R.id.left_drawer);
     DataModel[] mDrawerItem = setupDrawerItems();
-    detector = new GestureFilter(this, this);
 
     setupToolbar();
 
@@ -128,49 +97,81 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     checkNotificationIntent(mDrawerItem);
   }
 
+//  @Override
+//  public boolean dispatchTouchEvent(MotionEvent motionEvent) {
+//    //this.mDtector.onTouchEvent(motionEvent);
+//    return super.dispatchTouchEvent(motionEvent);
+//  }
+
   @Override
-  public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-    this.detector.onTouchEvent(motionEvent);
-    return super.dispatchTouchEvent(motionEvent);
+  public void onClick(AdapterView<?> adapter, int position) {
+    ResponseObject item = (ResponseObject) adapter.getItemAtPosition(position);
+
+    //Create intent
+    Intent intent = new Intent(MainActivity.this, CameraGridDetailsActivity.class);
+    intent.putExtra("title", item.getImageName());
+    intent.putExtra("image", item.getImagePath() + "/" + item.getImageName());
+
+    //Start details activity
+    startActivity(intent);
   }
 
   @Override
-  public void onSwipe(int direction) {
-    String text = "";
-    int position = 0;
-
-    switch (direction) {
-      case GestureFilter.SWIPE_RIGHT :
-        text = getString(R.string.swipe_right);
-        position = --mDrawerPosition;
-        if (position < 0) {
-          position = mNavigationDrawerItemTitles.length;
-          mDrawerPosition = position;
-        }
-        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-        break;
-      case GestureFilter.SWIPE_LEFT :
-        text = getString(R.string.swipe_left);
-        position = ++mDrawerPosition;
-        if (position > mNavigationDrawerItemTitles.length) {
-          position = 0;
-          mDrawerPosition = position;
-        }
-        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-        break;
-      case GestureFilter.SWIPE_DOWN :
-        text = getString(R.string.swipe_down);
-//        position = 1;
-//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-        break;
-      case GestureFilter.SWIPE_UP :
-        text = getString(R.string.swipe_up);
-//        position = 2;
-//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-        break;
+  public boolean onLongClick(CameraGridViewAdapter adapter,List<ResponseObject> mAdapterData, int position) {
+    ResponseObject item = mAdapterData.get(position);
+    File file = new File(item.getImagePath() + "/" + item.getImageName());
+    file.setWritable(true);
+    String counter = item.getImageName().replaceAll("\\D+","");
+    String imageNameThumb = Constants.RABBIT_MQ_IMAGES_THUMBNAIL_PREFIX + Integer.parseInt(counter) + ".jpg";
+    File fileThumb = new File(item.getImagePath() + "/" +imageNameThumb);
+    fileThumb.setWritable(true);
+    if (file.getAbsoluteFile().delete() || fileThumb.getAbsoluteFile().delete()) {
+      mAdapterData.remove(position);
+      ResponseObject.delete(item);
+      mDrawerList.invalidateViews();
+      adapter.notifyDataSetChanged();
+      Toast.makeText(this,  String.format(getResources().getString(R.string.file_was_deleted_succesfull) + " %s", file.getName()), Toast.LENGTH_SHORT).show();
     }
-    Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    return false;
   }
+
+//  @Override
+//  public void onSwipe(int direction) {
+//    String text = "";
+//    int position = 0;
+//
+//    switch (direction) {
+//      case GestureFilter.SWIPE_RIGHT :
+//        text = getString(R.string.swipe_right);
+//        position = --mDrawerPosition;
+//        if (position < 0) {
+//          position = mNavigationDrawerItemTitles.length;
+//          mDrawerPosition = position;
+//        }
+//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//        break;
+//      case GestureFilter.SWIPE_LEFT :
+//        text = getString(R.string.swipe_left);
+//        position = ++mDrawerPosition;
+//        if (position > mNavigationDrawerItemTitles.length) {
+//          position = 0;
+//          mDrawerPosition = position;
+//        }
+//        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//        break;
+//      case GestureFilter.SWIPE_DOWN :
+//        text = getString(R.string.swipe_down);
+////        position = 1;
+////        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//        break;
+//      case GestureFilter.SWIPE_UP :
+//        text = getString(R.string.swipe_up);
+////        position = 2;
+////        replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//        break;
+//    }
+//    //Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+  //}
 
 
 //  @Override
@@ -178,16 +179,20 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
 //
 //  }
 
-  @Override
-  public void onDoubleTap() {
-    //TODO
-  }
-//
-  @Override
-  public void onLongPress() {
-    int position = 0;
-    replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
-  }
+//  @Override
+//  public void onDoubleTap() {
+//    //TODO
+//  }
+////
+//  @Override
+//  public void onLongPress() {
+//    Fragment f = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+//    if (CameraGridFragment.class.getSimpleName().equals(f.getClass().getSimpleName())) {
+//      return;
+//    }
+//    int position = 0;
+//    replaceFragment(getFragmentByPosition(position), R.id.content_frame, position);
+//  }
 
 
   private void checkNotificationIntent(DataModel[] mDrawerItem) {
@@ -269,6 +274,8 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     mDrawerToggle.syncState();
   }
 
+
+
   void setupToolbar() {
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
@@ -326,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     }
   }
 
+
   @Override
   public void onDestroy() {
     super.onDestroy();
@@ -333,16 +341,14 @@ public class MainActivity extends AppCompatActivity implements GestureFilter.Sim
     if (mConnection != null) {
       unbindService(mConnection);
     }
-
-
-}
-
- private static class MyPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-    @Override
-    public boolean onScale(ScaleGestureDetector detector) {
-      Log.d("TAG", "PINCH! OUCH!");
-      return true;
-    }
   }
+//
+// private static class MyPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+//    @Override
+//    public boolean onScale(ScaleGestureDetector detector) {
+//      Log.d("TAG", "PINCH! OUCH!");
+//      return true;
+//    }
+//  }
 
 }

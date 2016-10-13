@@ -49,6 +49,7 @@ public class Constants {
   public static final String RECEIVER_CONTACTS = "ContactObserver";
 
   public static final String BROADCAST_NAME = "BROADCAST_NAME";
+  public static final String IMAGE_NAME = "IMAGE_NAME";
   public static final String DATABASE_NAME = "android_detective_server.db";
   public static final String LAYOUT_ID = "layout_id";
 

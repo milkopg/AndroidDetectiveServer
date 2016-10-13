@@ -14,5 +14,5 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 public interface IOnImageClickListener {
   void onClick(AdapterView<?> adapter, int position);
-  boolean onLongClick(CameraGridViewAdapter adapterView, View view, List<ResponseObject> mAdapterData, int position, long l);
+  boolean onLongClick(CameraGridViewAdapter adapterView, List<ResponseObject> mAdapterData, int position);
 }

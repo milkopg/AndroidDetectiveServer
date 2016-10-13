@@ -47,4 +47,8 @@
     <string name="save_sucessfull">Save successful!</string>
     <string name="setting_are_restored_from_database">Settings are restored from datasbase.</string>
     <string name="file_was_deleted_succesfull">Succesfull delete on file: </string>
+    <string name="delete_picture">Delete picture?</string>
+    <string name="do_you_confirm_deleting_selected_picture">Do you confirm deleting selected picture?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

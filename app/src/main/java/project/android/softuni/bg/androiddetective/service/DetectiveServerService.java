@@ -25,6 +25,13 @@ public class DetectiveServerService extends Service {
     return binder;
   }
 
+  /**
+   * Once service is started it receive RabbitMQ data
+   * @param intent
+   * @param flags
+   * @param startId
+   * @return
+   */
   @Override
   public int onStartCommand(final Intent intent, int flags, int startId) {
     server = RabbitMQServer.getInstance(getBaseContext());

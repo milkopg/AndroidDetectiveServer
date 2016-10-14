@@ -37,6 +37,10 @@ public class GestureFilter extends GestureDetector.SimpleOnGestureListener{
     this.listener = listener;
   }
 
+  /**
+   * dispatching touch event and recognizing them
+   * @param event
+   */
   public void onTouchEvent(MotionEvent event) {
     if (!this.running)
       return;
@@ -90,6 +94,14 @@ public class GestureFilter extends GestureDetector.SimpleOnGestureListener{
     return this.swipe_Min_Velocity;
   }
 
+  /**
+   * recognizing directions of swiping
+   * @param me1
+   * @param me2
+   * @param velocityX
+   * @param velocityY
+   * @return boolean true of it's recognized MotionEvent
+   */
   @Override
   public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
     boolean result = false;
@@ -106,42 +118,49 @@ public class GestureFilter extends GestureDetector.SimpleOnGestureListener{
     if(velocityX > getSwipeMinVelocity() && xDistance > getSwipeMinDistance()){
       if(me1.getX() > me2.getX()) { // right to left
         this.listener.onSwipe(SWIPE_LEFT);
-        Toast.makeText(context, "Right to Left", Toast.LENGTH_SHORT).show();
       } else {
         this.listener.onSwipe(SWIPE_RIGHT);
-        Toast.makeText(context, "Left to Right", Toast.LENGTH_SHORT).show();
       }
-
-
       result = true;
     }
     else if(velocityY > getSwipeMinVelocity() && yDistance > getSwipeMinDistance()){
       if(me1.getY() > me2.getY()) { // bottom to up
         this.listener.onSwipe(SWIPE_UP);
-        Toast.makeText(context, "Bottom to Up", Toast.LENGTH_SHORT).show();
       } else {
         this.listener.onSwipe(SWIPE_DOWN);
-        Toast.makeText(context, "Up to Bottom", Toast.LENGTH_SHORT).show();
       }
       result = true;
     }
     return result;
   }
 
+  /**
+   * OnSingleTap MotionEvent
+   * @param e - MotionEvent
+   * @return true if event is consumed
+   */
   @Override
   public boolean onSingleTapUp(MotionEvent e) {
-    Toast.makeText(context, "onSingleTapUp", Toast.LENGTH_SHORT).show();
     this.tapIndicator = true;
     return false;
   }
 
+  /**
+   * OnDoubleTap MotionEvent
+   * @param e - MotionEvent
+   * @return boolean true if event is consumed
+   */
   @Override
   public boolean onDoubleTap(MotionEvent e) {
     this.listener.onDoubleTap();
-    Toast.makeText(context, "onDoubleTap", Toast.LENGTH_SHORT).show();
     return true;
   }
 
+  /**
+   * Notified when an event within a double-tap gesture occurs, including the down, move, and up events
+   * @param e MotionEvent
+   * @return boolean true if the event is consumed, else false
+   */
   @Override
   public boolean onDoubleTapEvent(MotionEvent e) {
     Toast.makeText(context, "onDoubleTapEvent", Toast.LENGTH_SHORT).show();
@@ -149,28 +168,34 @@ public class GestureFilter extends GestureDetector.SimpleOnGestureListener{
     return super.onDoubleTapEvent(e);
   }
 
+  /**
+   * We owe an ACTION_UP, so we fake an setAction(ACTION_FAKE);
+   * action which will be converted to an ACTION_UP later.
+   * @param e The down motion event of the single-tap
+   * @return true if the event is consumed, else false
+   */
   @Override
   public boolean onSingleTapConfirmed(MotionEvent e) {
-    if(this.mode == MODE_DYNAMIC){        // we owe an ACTION_UP, so we fake an
-      e.setAction(ACTION_FAKE);      //action which will be converted to an ACTION_UP later.
+    if(this.mode == MODE_DYNAMIC){
+      e.setAction(ACTION_FAKE);
       this.context.dispatchTouchEvent(e);
     }
     return false;
   }
 
+  /**
+   * Notified when a long press occurs with the initial on down MotionEvent that trigged it.
+   * @param e The initial on down motion event that started the longpress.
+   */
   @Override
   public void onLongPress(MotionEvent e) {
-    Toast.makeText(context, "onLongPress", Toast.LENGTH_SHORT).show();
     listener.onLongPress();
     super.onLongPress(e);
   }
 
-//  @Override
-//  public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//    Toast.makeText(context, "onScroll", Toast.LENGTH_SHORT).show();
-//    return super.onScroll(e1, e2, distanceX, distanceY);
-//  }
-
+  /**
+   * callback interface
+   */
   public interface SimpleGestureListener{
     void onSwipe(int direction);
     void onDoubleTap();

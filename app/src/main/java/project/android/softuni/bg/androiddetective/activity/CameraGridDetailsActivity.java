@@ -43,12 +43,22 @@ public class CameraGridDetailsActivity extends AppCompatActivity implements Gest
     imageView.setImageBitmap(bm);
   }
 
+  /**
+   * required for dispatching events for GestureFilter
+   * @param motionEvent
+   * @return boolean Return true if this event was consumed.
+   */
   @Override
   public boolean dispatchTouchEvent(MotionEvent motionEvent) {
     this.mDetector.onTouchEvent(motionEvent);
     return super.dispatchTouchEvent(motionEvent);
   }
 
+  /**
+   * We are detecting SWIPE_LEFT and SWIPE_RIGHT gestures. SWIPE_LEFT go to previous picture and SWIPE_RIGHT is going to next picture.
+   * Picture list is fetched from database and method is checking if it's first or last picture to avoid exceptions
+   * @param direction
+   */
   @Override
   public void onSwipe(int direction) {
     List<ResponseObject> currentPictureList = QueriesUtil.getResponseObjectByBroadcastNameAndImageName(Constants.RECEIVER_CAMERA, title); //ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + " LIKE '" + Constants.RECEIVER_CAMERA + "' AND " + Constants.IMAGE_NAME + " = '" + title + "'", null, null, "ID DESC", null);
@@ -82,25 +92,40 @@ public class CameraGridDetailsActivity extends AppCompatActivity implements Gest
     }
   }
 
+  /**
+   * Change picture in onSwipe event. Picture path is taken from ResponseObject and it's being applied to activity
+   * @param response
+   */
   private void changePicture(ResponseObject response) {
     Intent intent = new Intent(getBaseContext(), CameraGridDetailsActivity.class);
     intent.putExtra(Constants.INTENT_TITLE, response.getImageName());
     intent.putExtra(Constants.INTENT_IMAGE, response.getImagePath() + "/" + response.getImageName());
+    //set flags to avoid pressing back button to go for previous picture. In this way is going directly to Grid Image View
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
     startActivity(intent);
     this.finish();
   }
 
   @Override
+  /**
+   * Goto pictures menu
+   */
   public void onDoubleTap() {
     gotoMenu(3);
   }
 
+  /**
+   * Goto settings menu
+   */
   @Override
   public void onLongPress() {
     gotoMenu(0);
   }
 
+  /**
+   * Goto Menu by specific menuID
+   * @param menuID
+   */
   private void gotoMenu(int menuID) {
     Intent intent = new Intent(getBaseContext(), MainActivity.class);
     intent.putExtra(Constants.MENU_ID, menuID);

@@ -21,6 +21,12 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<DataModel> {
     private int layoutResourceId;
     private DataModel data[] = null;
 
+  /**
+   * DrawerItemCustomAdapter used in DrawerMenus
+   * @param mContext
+   * @param layoutResourceId - layoutId
+   * @param data - DataModel[] data
+   */
     public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, DataModel[] data) {
         super(mContext, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;

@@ -32,21 +32,13 @@ public class Constants {
   public static final String HTTP_HEADER_CONTENT_LENGTH = "Content-Length";
   public static final String HTTP_HEADER_HOST = "Host";
   public static final String HTTP_HEADER_ACCEPT = "Accept";
-  public static final String HTTP_HEADER_LOCATION = "Location";
 
-
-  public static final String HTTP_REQUEST_METHOD_POST = "POST";
   public static final String HTTP_REQUEST_METHOD_GET = "GET";
 
   public static final String HTTP_HEADER_CONTENT_TYPE_JSON = "application/json";
   public static final String HTTP_HEADER_HOST_JSONBLOB = "jsonblob.com";
 
-  public static final String JSON_BLOB_HEADER_MESSAGE_ID = "X-jsonblob";
-
-
   public static final String RECEIVER_CALL = "CallBroadcastReceiver";
-  public static final String RECEIVER_CALL_OUTGOING_CALL = "OutgoingCallBroadcastReceiver";
-  public static final String RECEIVER_SMS_SENT = "SmsDeliverBroadcastReceiver";
   public static final String RECEIVER_SMS_RECEIVED = "SmsReceivedBroadcastReceiver";
   public static final String RECEIVER_CAMERA = "CameraReceiver";
   public static final String RECEIVER_CONTACTS = "ContactObserver";
@@ -68,10 +60,9 @@ public class Constants {
   public static final String COLUMN_RESPONSE_OBJECT_DATE = "DATE";
   public static final String COLUMN_RESPONSE_OBJECT_SEND_TO = "SEND_TO";
   public static final String COLUMN_RESPONSE_OBJECT_SEND_TEXT = "SEND_TEXT";
-  public static final String COLUMN_SETTING_NAME = "NAME";
-  public static final String COLUMN_SETTING_VALUE = "VALUE";
   public static final String COLUMN_SETTING_RESOURCE_NAME = "RESOURCE_NAME";
 
+  public static final String ENCODING_UTF8 = "UTF-8";
 
   public static final String MENU_ID = "MENU_ID";
 }

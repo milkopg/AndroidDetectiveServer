@@ -198,19 +198,28 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
   }
 
 
-
+  /**
+   * setupToolBar for DrawerItem
+   */
   void setupToolbar() {
     toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
     getSupportActionBar().setDisplayShowHomeEnabled(true);
   }
 
+  /**
+   * Setup ActionBarDrawerToggle item, closed and opened state
+   */
   void setupDrawerToggle() {
     mDrawerToggle = new android.support.v7.app.ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
     //This is necessary to change the icon of the Drawer Toggle upon state change.
     mDrawerToggle.syncState();
   }
 
+  /**
+   * DataModel array holding Drawer Menus
+   * @return DataModel array
+   */
   private DataModel[] setupDrawerItems() {
     DataModel[] drawerItem = new DataModel[5];
 
@@ -222,13 +231,12 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     return drawerItem;
   }
 
-  private void setupService() {
-    Intent service = new Intent(this, DetectiveServerService.class);
-    mConnection = ServiceConnectionManager.getInstance();
-    bindService(service, mConnection, Context.BIND_AUTO_CREATE);
-    startService(service);
-  }
-
+  /**
+   * Setup DrawerAdapter and adding DrawerListener
+   * @param mDrawerList
+   * @param mDrawerLayout
+   * @param drawerItem
+   */
   private void setupDrawerAdapter(ListView mDrawerList, DrawerLayout mDrawerLayout, DataModel[] drawerItem) {
     DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_menu_item, drawerItem);
     mDrawerList.setAdapter(adapter);
@@ -236,6 +244,22 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     mDrawerLayout.addDrawerListener(mDrawerToggle);
   }
 
+  /**
+   * setup DetectiveServerService, bind and start it
+   */
+  private void setupService() {
+    Intent service = new Intent(this, DetectiveServerService.class);
+    mConnection = ServiceConnectionManager.getInstance();
+    bindService(service, mConnection, Context.BIND_AUTO_CREATE);
+    startService(service);
+  }
+
+  /**
+   * Replace current fragment with new Fragment and setting appropriate drawer position in new Fragment
+   * @param fragment new Fragment
+   * @param layoutId
+   * @param drawerPosition
+   */
   private void replaceFragment(Fragment fragment, int layoutId, int drawerPosition) {
     if (fragment != null) {
       FragmentManager fragmentManager = getSupportFragmentManager();
@@ -249,7 +273,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
       mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
       mDrawerLayout.closeDrawer(mDrawerList);
       mDrawerPosition = drawerPosition;
-
     } else {
       Log.e("MainActivity", "Error in creating fragment");
     }

@@ -18,11 +18,17 @@ import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 public class RecycleViewContactsCustomAdapter extends RecyclerView.Adapter<RecycleViewContactsCustomAdapter.ViewHolder> {
   private List<Contact> mAdapterData;
 
+  /**
+   * Custom RecycleViewContactsCustomAdapter used for fetching phone contact list from phone
+   * @param mAdapterData - List<Contact> contactList</>
+   */
   public RecycleViewContactsCustomAdapter(List<Contact> mAdapterData) {
     this.mAdapterData = mAdapterData;
   }
 
-
+  /**
+   * Holder for single Contact - name, phoneNumber and Email
+   */
   public static class ViewHolder extends  RecyclerView.ViewHolder{
     private TextView mTextViewContactName;
     private TextView mTextViewPhoneNumber;

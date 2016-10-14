@@ -70,10 +70,14 @@ public class ContactsFragment extends Fragment implements View.OnClickListener {
     return view;
   }
 
+  /**
+   * Switch dynamically asc or desc ordering by pressed column header
+   * @param view
+   */
   @Override
   public void onClick(View view) {
     String columnName = QueriesUtil.getDatabaseColumnNameByViewId(view.getId());
-    boolean ascending = QueriesUtil.getAscOrDescSorting(columnName);
+    boolean ascending = QueriesUtil.getAscSorting(columnName);
     String orderBy = QueriesUtil.getOrderBy(ascending);
     QueriesUtil.orderContactData(Contact.class, mAdapter, mAdapterData, columnName, orderBy);
   }

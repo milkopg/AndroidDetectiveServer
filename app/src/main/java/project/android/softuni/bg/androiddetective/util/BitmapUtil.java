@@ -18,16 +18,22 @@ import java.io.IOException;
 public class BitmapUtil {
   private static final String TAG = BitmapUtil.class.getSimpleName();
 
-  public static byte[] getBytes(Bitmap bitmap) {
-    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-    return stream.toByteArray();
-  }
-
+  /**
+   * Convert byte array to BitMap
+   * @param image
+   * @return
+   */
   public static Bitmap getImage(byte[] image) {
     return BitmapFactory.decodeByteArray(image, 0, image.length);
   }
 
+  /**
+   * Save bitmap to internal storage
+   * @param context
+   * @param bitmapImage
+   * @param fileName
+   * @return path of Image
+   */
   public static String saveToInternalStorage(Context context, Bitmap bitmapImage, String fileName){
     ContextWrapper cw = new ContextWrapper(context);
     // path to /data/data/yourapp/app_data/imageDir
@@ -49,22 +55,6 @@ public class BitmapUtil {
         Log.e(TAG, "saveToInternalStorage Cannot close FileOutputStream: " + e);
       }
     }
-
     return directory.getAbsolutePath();
   }
-
-  public static byte [] compressImage(byte [] image) {
-    Bitmap bitmap = getImage(image);
-    ByteArrayOutputStream bos = null;
-    boolean success;
-    try {
-      bos = new ByteArrayOutputStream(image.length);
-      success = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-    } catch (Exception e) {
-      Log.e(TAG, "compressImage cannot open OutputStream");
-      return  null;
-    }
-    return success ? bos.toByteArray() : image;
-  }
-
 }

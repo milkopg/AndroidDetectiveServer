@@ -24,7 +24,6 @@ import java.util.Map;
 import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.util.Constants;
 import project.android.softuni.bg.androiddetective.util.QueriesUtil;
-import project.android.softuni.bg.androiddetective.webapi.model.Contact;
 import project.android.softuni.bg.androiddetective.webapi.model.Setting;
 
 public class SettingsFragment extends Fragment implements View.OnClickListener {
@@ -47,15 +46,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     mButtonOk.setOnClickListener(this);
     mButtonCancel.setOnClickListener(this);
 
-//    List<ResponseObject> cameras= ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", Constants.RECEIVER_CAMERA);
-//    for (ResponseObject responseObject : cameras){
-//      responseObject.delete();
-//    }
     fillSettings();
 
     return mView;
   }
 
+  /**
+   * Iterate dynamically over database settings and create all necessary textView and EditText as are needed
+   */
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
   private void fillSettings() {
     View view = mView;
@@ -78,7 +76,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
       textViewHidden.setText(setting.getResourceName());
       rowLinear.addView(textViewHidden);
 
-
       //Add Setting name TextView
       TextView textViewLabel = new TextView(getContext());
       textViewLabel.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -99,7 +96,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
       mEditTextIdsMap.put(editTextValue.getId(), setting.getResourceName());
       rowLinear.addView(editTextValue);
 
-
       //add rowLinearLayout to mParentLinear
       mParentLinear.addView(rowLinear);
     }
@@ -113,11 +109,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             onConfirm();
         break;
       case R.id.buttonSettingsCancel:
-        onCancel(mView);
+        onCancel();
         break;
     }
   }
 
+  /**
+   * make InputValidation if field is empty, if url is not valid and valid RabbitMq URI
+   * @return
+   */
   private boolean validateInput() {
     boolean valid = true;
     for (Map.Entry<Integer, String > entry : mEditTextIdsMap.entrySet()) {
@@ -145,6 +145,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     return valid;
   }
 
+  /**
+   * Saving all data to database. We create a hiddenTextView holding database key for translations.
+   */
   public void onConfirm() {
     final int childCount = mParentLinear.getChildCount();
     for (int i = 0; i < childCount; i++) {
@@ -152,7 +155,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         LinearLayout innerLinear = ((LinearLayout) (mParentLinear.getChildAt(i)));
         String databaseKey = null;
         for (int j = 0; j < innerLinear.getChildCount(); j++) {
-          View view = ((TextView) (innerLinear.getChildAt(j)));
+          View view = ((innerLinear.getChildAt(j)));
           if (view instanceof TextView) {
             TextView hidden = (TextView) view;
             if (hidden.getVisibility() == View.GONE) {
@@ -174,7 +177,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
   }
 
   @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-  public void onCancel(View view) {
+  public void onCancel() {
     fillSettings();
     Toast.makeText(getContext(), R.string.setting_are_restored_from_database, Toast.LENGTH_SHORT).show();
   }

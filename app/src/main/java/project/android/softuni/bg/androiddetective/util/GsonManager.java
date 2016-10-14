@@ -27,16 +27,21 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 public class GsonManager {
   private static final String TAG = GsonManager.class.getSimpleName();
 
+  /**
+   * Convert RegularObject to Gson String with specific date short format yyyy-MM-dd HH:mm
+   * @param data
+   * @return convert gson string
+   */
   public static String convertObjectToGsonString(ResponseObject data) {
     Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
     return gson.toJson(data);
   }
 
-  public static String convertObjectMapToGsonString (ConcurrentHashMap<String, ResponseObject> objectBaseMap) {
-    Gson gson = new Gson();
-    return gson.toJson(objectBaseMap);
-  }
-
+  /**
+   * ConvertGsonString to Object.
+   * @param json
+   * @return serialized GsonObject
+   */
   public static ResponseObject convertGsonStringToObject(String json) {
     Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
     ResponseObject data = null;
@@ -48,30 +53,15 @@ public class GsonManager {
      return data;
   }
 
-  public static ConcurrentHashMap<String, ResponseObject> convertGsonStringToObjectMap(String json) {
-    Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_SHORT_DATE_TIME).create();
-    ConcurrentHashMap<String, ResponseObject>  objectMap = new ConcurrentHashMap<>();
-    try {
-      objectMap = gson.fromJson(json, objectMap.getClass());
-    } catch (JsonSyntaxException e) {
-      Log.e(TAG, "convertGsonStringToObjectMap: " + e);
-    }
-    return objectMap;
-  }
-
-  public static final Gson customGson = new GsonBuilder().registerTypeHierarchyAdapter(byte[].class,
-          new ByteArrayToBase64TypeAdapter()).create();
-
-
-  // Using Android's base64 libraries. This can be replaced with any base64 library.
-  private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {
-    public byte[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-      return Base64.decode(json.getAsString(), Base64.NO_WRAP);
-    }
-
-    public JsonElement serialize(byte[] src, Type typeOfSrc, JsonSerializationContext context) {
-      return new JsonPrimitive(Base64.encodeToString(src, Base64.NO_WRAP));
-    }
-
-  }
+//  // Using Android's base64 libraries. This can be replaced with any base64 library.
+//  private static class ByteArrayToBase64TypeAdapter implements JsonSerializer<byte[]>, JsonDeserializer<byte[]> {
+//    public byte[] deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+//      return Base64.decode(json.getAsString(), Base64.NO_WRAP);
+//    }
+//
+//    public JsonElement serialize(byte[] src, Type typeOfSrc, JsonSerializationContext context) {
+//      return new JsonPrimitive(Base64.encodeToString(src, Base64.NO_WRAP));
+//    }
+//
+//  }
 }

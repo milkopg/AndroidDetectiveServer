@@ -12,8 +12,15 @@ import project.android.softuni.bg.androiddetective.util.Constants;
 /**
  * Created by Milko G on 22/09/2016.
  */
-public class CallerFragment extends BaseFragment/* implements View.OnClickListener*/ {
+public class CallerFragment extends BaseFragment {
 
+  /**
+   * Sending unique data (broadcastName and layoutId) for BaseFragment and then inflate it
+   * @param inflater
+   * @param container
+   * @param savedInstanceState
+   * @return
+   */
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     Bundle bundle = new Bundle();

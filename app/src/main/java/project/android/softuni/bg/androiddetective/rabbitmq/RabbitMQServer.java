@@ -47,10 +47,27 @@ public class RabbitMQServer {
   private String rabbitMQUri = QueriesUtil.getNotNullValue(QueriesUtil.getSettingByDatabaseKey(Constants.SETTING_RABBIT_MQ_URI_STRING_NAME).getValue(), Constants.SETTING_RABBIT_MQ_URI_VALUE);
   int retry = 0;
 
+  /**
+   * RabbitMQ messaging queueing system. RabbitMQ is an open source message broker. It receives and delivers messages from and to your applications.
+   * A message broker is (unlike databases and key-value store) purpose built to highly effectively and safely deliver information between your applications.
+   * For more info https://www.rabbitmq.com/
+   * We use CloudAMQP for free RabbitMQ message provider. I have Little Lemur account for development with Max 1 Million messages per month
+   Max 20 concurrent connections
+   Max 100 queues
+   Max 10 000 queued messages
+   * https://www.cloudamqp.com/
+   *
+   * @param context
+   */
   public RabbitMQServer(Context context) {
     RabbitMQServer.mContext = context;
   }
 
+  /**
+   * This method creates new RabbitMq connection and channel. It create delivery and downloading delivery content. It recognized
+   * if it's String (Json) or image byte array download. If delivery is not possible download already backuped data from JSONBlob api.
+   * It retries 5 times to reconnect with 10 seconds timeout, if connection is failed , network connection listener will start it.
+   */
   public void receiveMessage() {
     Channel channel;
     Connection connection = null;
@@ -90,7 +107,7 @@ public class RabbitMQServer {
           if (isJsonMessage(replyProps.getContentType())) {
             response = processRegularResponse(responseArray);
             if (response == null) {
-              response = new String(responseArray, "UTF-8");
+              response = new String(responseArray, Constants.ENCODING_UTF8);
               responseArray = getJsonBlobData(generateJsonBlobUrl(replyProps.getMessageId()), null, response);
               processRegularResponse(responseArray);
             }
@@ -137,15 +154,25 @@ public class RabbitMQServer {
     }
   }
 
+  /**
+   * generate JsonBlobUrl by adding URL + messageId
+   * @param messageId
+   * @return generated Url
+   */
   private String generateJsonBlobUrl(String messageId) {
     return Constants.SETTING_JSON_BLOB_API_URL_VALUE + "/" + messageId;
   }
 
+  /**
+   * process Relugar String message. It convert it to normal UTF-8 string and then to ResponseObject using GsonManager
+   * @param response byte array of regular String response
+   * @return converted Json String
+   */
   private synchronized String processRegularResponse(byte[] response) {
-    String message = null;
+    String message;
     if (response == null) return null;
     try {
-      message = new String(response, "UTF-8");
+      message = new String(response, Constants.ENCODING_UTF8);
     } catch (UnsupportedEncodingException e) {
       Log.e(TAG, "processRegularResponse " + e);
       return null;
@@ -156,6 +183,14 @@ public class RabbitMQServer {
     return message;
   }
 
+  /**
+   * Process image response. Image byte array is being deserialized as a String and then String is decoded to deserialized Base64 byte array
+   * 2 images are saved. Original one and Thumbnail. Thumbnail is used for performance at run time. Original one is used in details sceen.
+   * Once images are persisted Notification is shown.
+   * @param response raw byte array image
+   * @param messageId of generated picture stored in JsonBlob
+   * @return imagePath of new created picture in the server
+   */
   private synchronized String processImageResponse(byte[] response, String messageId) {
     if (response == null) return null;
     String deserializedString = deserializeByArrayToString(response);
@@ -192,6 +227,14 @@ public class RabbitMQServer {
     return imagePath;
   }
 
+  /**
+   * Get already saved data in JsonBlob service in case that rabbitMQ cannot download data
+   * For more information: https://jsonblob.com/api#get
+   * @param url on JsonBlob instance
+   * @param binaryData - imageData
+   * @param rawData - JsonData
+   * @return - data in byte array
+   */
   protected synchronized byte [] getJsonBlobData(String url, byte[] binaryData, String rawData) {
     if (binaryData == null && rawData == null) return  null;
     if (url == null) return null;
@@ -221,6 +264,13 @@ public class RabbitMQServer {
     return null;
   }
 
+  /**
+   * JsonBlob is free API for sending jsonObjects in free Cloud, and it's returning unique JsobBlobId after record is inserted.
+   * For more information https://jsonblob.com/api
+   * @param url - of JsonBlob
+   * @param mimeType - mimeType of url Connection
+   * @return HttpUrlConnection
+   */
   private HttpURLConnection initHttpConnection(String url, String mimeType) {
     HttpURLConnection conn = null;
     URL u = null;
@@ -242,6 +292,11 @@ public class RabbitMQServer {
     return conn;
   }
 
+  /**
+   * Deserialize normal byte[] array response to regular String
+   * @param response
+   * @return
+   */
   private String deserializeByArrayToString(byte [] response) {
     String inputLine;
     StringBuilder builder = new StringBuilder();
@@ -254,10 +309,13 @@ public class RabbitMQServer {
     } catch (IOException e) {
       Log.e(TAG, "processImageResponse: " + e);
     }
-
     return builder.toString();
   }
 
+  /**
+   * Persist response Object and Show Notification. It checks if contact data is saved and persist it.
+   * @param responseObject
+   */
   private void persistObjectAndShowNotification(ResponseObject responseObject) {
     if ((responseObject != null) && (responseObject.getUuid() != null)) {
       List<Contact> contacts = responseObject.getContacts();
@@ -273,11 +331,21 @@ public class RabbitMQServer {
     }
   }
 
+  /**
+   * check if contentType is null - it's json message, otherwise is picture.
+   * @param contentType
+   * @return
+   */
   private boolean isJsonMessage(String contentType) {
     if (contentType == null) return true;
     return !(contentType != null && contentType.equals(Constants.RABBIT_MQ_CONTENT_TYPE));
   }
 
+  /**
+   * get SingleTop instance of RabbitMQ server
+   * @param context
+   * @return RabbitMQ isntance
+   */
   public static RabbitMQServer getInstance(Context context) {
     mContext = context;
     if (instance == null)
@@ -285,6 +353,11 @@ public class RabbitMQServer {
     return instance;
   }
 
+  /**
+   * disable cloning. Needed for singleton
+   * @return
+   * @throws CloneNotSupportedException
+   */
   @Override
   protected Object clone() throws CloneNotSupportedException {
     return null;

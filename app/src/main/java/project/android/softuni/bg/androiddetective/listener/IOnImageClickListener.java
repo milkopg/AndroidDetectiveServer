@@ -10,6 +10,7 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
  * Created by Milko on 6.10.2016 г..
+ * Callback interface for ImageView
  */
 
 public interface IOnImageClickListener {

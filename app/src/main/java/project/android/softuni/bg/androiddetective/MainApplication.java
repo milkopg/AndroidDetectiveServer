@@ -45,6 +45,9 @@ public class MainApplication extends Application {
     }
   }
 
+  /**
+   * Insert base setting for jsonBlobUrl, RabbitMQ uri and queue_name
+   */
   private void initSettingList() {
     Setting.deleteAll(Setting.class);
     Setting setting = new Setting(Constants.SETTING_JSON_BLOB_API_URL_DB_NAME, Constants.SETTING_JSON_BLOB_API_URL_VALUE, Constants.SETTING_JSON_BLOB_API_URL_STRING_NAME);
@@ -57,10 +60,6 @@ public class MainApplication extends Application {
     setting.save();
   }
 
-  private void initDb() {
-
-  }
-
   @Override
   public void onTerminate() {
     super.onTerminate();
@@ -71,6 +70,12 @@ public class MainApplication extends Application {
     super.onLowMemory();
   }
 
+  /**
+   * check if current database exists
+   * @param context
+   * @param dbName
+   * @return boolean if database exists
+   */
   private boolean databaseExists(ContextWrapper context, String dbName) {
     File dbFile = context.getDatabasePath(dbName);
 

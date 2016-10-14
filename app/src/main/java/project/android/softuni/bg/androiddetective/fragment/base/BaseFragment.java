@@ -37,6 +37,11 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
  * Created by Milko on 4.10.2016 г..
  */
 
+/**
+ * BaseFragment used for displaying data from SMSReceiver and CallReceiver. Dedicated fragment
+ * needs to set in bundle only specific layoutId and broadcast name and base adapter will display specific data
+ *
+ */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
   private static final String TAG = CallerFragment.class.getSimpleName();
   private List<ResponseObject> mAdapterData;
@@ -96,31 +101,12 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     setDateTimeField();
 
-    //setupPinch();
-
     return rootView;
   }
 
-  private void setupPinch() {
-   final ScaleGestureDetector mScaleDetector =
-            new ScaleGestureDetector(getContext(), new MyPinchListener());
-    mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-      @Override
-      public boolean onTouch(View v, MotionEvent event) {
-        mScaleDetector.onTouchEvent(event);
-        return true;
-      }
-    });
-  }
-
-  static class MyPinchListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-    @Override
-    public boolean onScale(ScaleGestureDetector detector) {
-      Log.d("TAG", "PINCH! OUCH!");
-      return true;
-    }
-  }
-
+  /**
+   * setting initial calendar dates for Calendar Date Picker. For fromDate is set time 00:00:00 and for toDate is set 23:59:59;
+   */
   private void setDateTimeField() {
 
     fromCalendar = Calendar.getInstance();
@@ -160,6 +146,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     calendar.set(year, month, day, hours , minutes, seconds);
   }
 
+  /**
+   * switches is calendar edit text are clicked or it's pressed sorting columns in textviews
+   * @param view
+   */
   @Override
   public void onClick(View view) {
     String columnOrderName;

@@ -19,6 +19,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
   public NetworkChangeReceiver() {
   }
 
+  /**
+   * Custom NetworkStateChangeListener. It listen it internet connection is off or on.
+   * If it's on it starts Service if it's off stop service
+   * @param context
+   * @param intent for Broadcast
+   */
   @Override
   public void onReceive(Context context, Intent intent) {
     Bundle extras = intent.getExtras();
@@ -32,13 +38,12 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
       Toast.makeText(context, "Internet connection is on", Toast.LENGTH_LONG).show();
       Intent service = new Intent(context, DetectiveServerService.class);
       context.startService(service);
-      Log.d(TAG, "Internet connection is on: service started" );
-
+      Log.d(TAG, "Internet connection is on: service started");
     } else {
       Toast.makeText(context, "Internet connection is Off", Toast.LENGTH_LONG).show();
       Intent service = new Intent(context, DetectiveServerService.class);
       context.stopService(service);
-      Log.d(TAG, "Internet connection is off: service stopped" );
+      Log.d(TAG, "Internet connection is off: service stopped");
     }
   }
 }

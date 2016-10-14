@@ -19,10 +19,17 @@ import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 public class RecycleViewTableCustomAdapter extends RecyclerView.Adapter<RecycleViewTableCustomAdapter.ViewHolder>{
   List<ResponseObject> mAdapterData;
 
+  /**
+   * Custom RecycleViewTableCustomAdapter. It's a base Adapter used for displaying data from SMSReceiver and CallReceiver
+   * @param mAdapterData - List of ResponseObject data
+   */
   public RecycleViewTableCustomAdapter(List<ResponseObject> mAdapterData) {
     this.mAdapterData = mAdapterData;
   }
 
+  /**
+   * View holder for displaying data - date, sendTo and sendText
+   */
   public static class ViewHolder extends  RecyclerView.ViewHolder {
     private TextView mTextViewDate;
     private TextView mTextViewSendTo;

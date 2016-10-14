@@ -19,9 +19,16 @@ public class NotificationManagerLocal {
   private static NotificationManagerLocal instance;
   private static int number = 0;
 
+  /**
+   * private constructor required for singleTon
+   */
   private NotificationManagerLocal() {
   }
 
+  /**
+   * ShowNotification. It recognize BroadcastName and it send data for openning appropriate FragmentScreen
+   * @param responseObject
+   */
   public void showNotification(ResponseObject responseObject) {
     if (responseObject == null) return;;
     final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
@@ -44,6 +51,11 @@ public class NotificationManagerLocal {
     number++;
   }
 
+  /**
+   * getInstance of NotificationManagerLocal
+   * @param context
+   * @return NotificationManagerLocal
+   */
   public static NotificationManagerLocal getInstance(Context context) {
     mContext = context;
     if (instance == null)

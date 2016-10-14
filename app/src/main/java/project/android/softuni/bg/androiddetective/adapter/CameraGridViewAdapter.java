@@ -21,8 +21,14 @@ public class CameraGridViewAdapter extends ArrayAdapter<ResponseObject> {
 
     private Context mContext;
     private int mLayoutResourceId;
-    private List<ResponseObject> mAdapterData = new ArrayList<ResponseObject>();
+    private List<ResponseObject> mAdapterData = new ArrayList<>();
 
+  /**
+   * Custom CameraGridViewAdapter
+   * @param context
+   * @param layoutResourceId - layoutId
+   * @param data - required for adapter for displaying data
+   */
     public CameraGridViewAdapter(Context context, int layoutResourceId, List<ResponseObject> data) {
         super(context, layoutResourceId, data);
         this.mLayoutResourceId = layoutResourceId;

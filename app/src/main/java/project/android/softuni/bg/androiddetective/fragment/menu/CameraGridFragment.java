@@ -68,6 +68,14 @@ public class CameraGridFragment extends Fragment {
     return rootView;
   }
 
+  /**
+   * ShowAlertDialog for asking user for File Deletion
+   * @param context
+   * @param title - title of Dialog
+   * @param message - Message of Dialog
+   * @param adapterView - final CameraGridViewAdapter adapterView
+   * @param position - position of element in view
+   */
   private void showAlertDialog(Context context, String title, String message, final CameraGridViewAdapter adapterView, final int position) {
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
             context);

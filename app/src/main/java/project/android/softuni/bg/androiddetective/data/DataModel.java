@@ -9,7 +9,12 @@ public class DataModel {
     private String name;
     private String receiverName;
 
-    // Constructor.
+  /**
+   * DataModel for constructing menus in Drawer
+   * @param icon - icon of menu
+   * @param name - name of menu
+   * @param receiverName - related receiver name in menu
+   */
     public DataModel(int icon, String name, String receiverName) {
 
         this.icon = icon;

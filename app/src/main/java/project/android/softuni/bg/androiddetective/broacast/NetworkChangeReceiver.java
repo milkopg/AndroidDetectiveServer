@@ -36,6 +36,11 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
     if (state == NetworkInfo.State.CONNECTED) {
       Toast.makeText(context, "Internet connection is on", Toast.LENGTH_LONG).show();
+      try {
+        Thread.sleep(5000);
+      } catch (InterruptedException e) {
+        Log.d(TAG, "Thread Cannot sleep");
+      }
       Intent service = new Intent(context, DetectiveServerService.class);
       context.startService(service);
       Log.d(TAG, "Internet connection is on: service started");

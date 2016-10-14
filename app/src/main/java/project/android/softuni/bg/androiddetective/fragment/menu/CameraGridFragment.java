@@ -22,6 +22,7 @@ import project.android.softuni.bg.androiddetective.R;
 import project.android.softuni.bg.androiddetective.adapter.CameraGridViewAdapter;
 import project.android.softuni.bg.androiddetective.listener.IOnImageClickListener;
 import project.android.softuni.bg.androiddetective.util.Constants;
+import project.android.softuni.bg.androiddetective.util.QueriesUtil;
 import project.android.softuni.bg.androiddetective.webapi.model.ResponseObject;
 
 /**
@@ -45,7 +46,7 @@ public class CameraGridFragment extends Fragment {
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_camera_grid, container, false);
 
-    mAdapterData = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", Constants.RECEIVER_CAMERA);
+    mAdapterData = QueriesUtil.getResponseObjectByBroadcastName(Constants.RECEIVER_CAMERA);
     mGridView = (GridView) rootView.findViewById(R.id.gridViewCamera);
     mGridAdapter = new CameraGridViewAdapter(getContext(), R.layout.layout_grid_camera, mAdapterData);
     mGridView.setAdapter(mGridAdapter);

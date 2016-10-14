@@ -97,9 +97,10 @@ public class RabbitMQServer {
 
           } else {
             response = processImageResponse(responseArray, replyProps.getMessageId());
-            if (response == null)
+            if (response == null) {
               responseArray = getJsonBlobData(generateJsonBlobUrl(replyProps.getMessageId()), responseArray, null);
               processImageResponse(responseArray, replyProps.getMessageId());
+            }
           }
 
         } catch (Exception e) {

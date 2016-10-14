@@ -84,7 +84,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     setBroadcastName(bundle.getString(Constants.BROADCAST_NAME));
 
     mAdapterData = new ArrayList<>();
-    mAdapterData = ResponseObject.find(ResponseObject.class, Constants.BROADCAST_NAME + "=?", getBroadcastName());
+    mAdapterData = QueriesUtil.getResponseObjectByBroadcastName(getBroadcastName());
 
     mAdapter = new RecycleViewTableCustomAdapter(mAdapterData);
     mLayoutManager = new LinearLayoutManager(getContext());

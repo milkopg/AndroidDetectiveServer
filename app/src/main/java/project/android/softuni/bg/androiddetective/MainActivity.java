@@ -233,7 +233,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_menu_item, drawerItem);
     mDrawerList.setAdapter(adapter);
     mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-    mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     mDrawerLayout.addDrawerListener(mDrawerToggle);
   }
 

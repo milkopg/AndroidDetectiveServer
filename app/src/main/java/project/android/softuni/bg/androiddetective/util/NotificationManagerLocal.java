@@ -37,7 +37,11 @@ public class NotificationManagerLocal {
     mBuilder.setSmallIcon(R.mipmap.ic_launcher);
     mBuilder.setAutoCancel(true);
     Intent notificationIntent = new Intent(mContext, MainActivity.class);
-    notificationIntent.putExtra(Constants.BROADCAST_NAME, responseObject.getBroadcastName());
+    if (responseObject.getContacts() != null) {
+      notificationIntent.putExtra(Constants.BROADCAST_NAME, Constants.RECEIVER_CONTACTS);
+    } else {
+      notificationIntent.putExtra(Constants.BROADCAST_NAME, responseObject.getBroadcastName());
+    }
 
     TaskStackBuilder tsb = TaskStackBuilder.create(mContext);
     tsb.addParentStack(MainActivity.class);

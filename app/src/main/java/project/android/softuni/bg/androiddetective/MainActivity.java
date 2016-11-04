@@ -32,6 +32,7 @@ import project.android.softuni.bg.androiddetective.data.DataModel;
 import project.android.softuni.bg.androiddetective.fragment.menu.CallerFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.CameraGridFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ContactsFragment;
+import project.android.softuni.bg.androiddetective.fragment.menu.GpsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.ReadSmsFragment;
 import project.android.softuni.bg.androiddetective.fragment.menu.SettingsFragment;
 import project.android.softuni.bg.androiddetective.gestures.GestureFilter;
@@ -53,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
   private android.support.v7.app.ActionBarDrawerToggle mDrawerToggle;
   private ServiceConnection mConnection;
   private MainApplication app;
-  private GestureFilter mDtector;
   private int mDrawerPosition;
 
   @Override
@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
       case 4:
         fragment = new ContactsFragment();
         break;
+      case 5:
+        fragment = new GpsFragment();
+        break;
 
       default:
         break;
@@ -221,13 +224,14 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
    * @return DataModel array
    */
   private DataModel[] setupDrawerItems() {
-    DataModel[] drawerItem = new DataModel[5];
+    DataModel[] drawerItem = new DataModel[6];
 
     drawerItem[0] = new DataModel(R.mipmap.settings, getString(R.string.menu_settings), getString(R.string.menu_settings));
     drawerItem[1] = new DataModel(R.mipmap.sms, getString(R.string.menu_read_sms), Constants.RECEIVER_SMS_RECEIVED);
     drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info), Constants.RECEIVER_CALL);
     drawerItem[3] = new DataModel(R.mipmap.camera, getString(R.string.camera_pictures), Constants.RECEIVER_CAMERA);
     drawerItem[4] = new DataModel(R.mipmap.contact, getString(R.string.contacts), Constants.RECEIVER_CONTACTS);
+    drawerItem[5] = new DataModel(R.mipmap.call, getString(R.string.gps_places), Constants.RECEIVER_GPS);
     return drawerItem;
   }
 

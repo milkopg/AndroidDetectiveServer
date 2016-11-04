@@ -42,6 +42,7 @@ public class Constants {
   public static final String RECEIVER_SMS_RECEIVED = "SmsReceivedBroadcastReceiver";
   public static final String RECEIVER_CAMERA = "CameraReceiver";
   public static final String RECEIVER_CONTACTS = "ContactObserver";
+  public static final String RECEIVER_GPS = "GpsReceiver";
 
   public static final String BROADCAST_NAME = "BROADCAST_NAME";
   public static final String IMAGE_NAME = "IMAGE_NAME";

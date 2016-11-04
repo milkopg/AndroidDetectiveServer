@@ -15,6 +15,7 @@
         <item>Calls</item>
         <item>Camera pictures</item>
         <item>Contacts</item>
+        <item>Gps</item>
     </string-array>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -51,4 +52,5 @@
     <string name="do_you_confirm_deleting_selected_picture">Do you confirm deleting selected picture?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="gps_places">Gps places</string>
 </resources>

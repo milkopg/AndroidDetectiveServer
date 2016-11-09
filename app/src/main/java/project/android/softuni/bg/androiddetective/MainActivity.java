@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements IOnImageClickList
     drawerItem[2] = new DataModel(R.mipmap.call, getString(R.string.read_call_info), Constants.RECEIVER_CALL);
     drawerItem[3] = new DataModel(R.mipmap.camera, getString(R.string.camera_pictures), Constants.RECEIVER_CAMERA);
     drawerItem[4] = new DataModel(R.mipmap.contact, getString(R.string.contacts), Constants.RECEIVER_CONTACTS);
-    drawerItem[5] = new DataModel(R.mipmap.call, getString(R.string.gps_places), Constants.RECEIVER_GPS);
+    drawerItem[5] = new DataModel(R.mipmap.gps, getString(R.string.gps_places), Constants.RECEIVER_GPS);
     return drawerItem;
   }
 
